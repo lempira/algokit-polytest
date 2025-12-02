@@ -54,6 +54,7 @@ type TxData struct {
 	Stxn      transactions.SignedTxn `codec:"stxn"`
 	StxnBlob  []byte                 `codec:"stxnBlob"`
 	TxnBlob   []byte                 `codec:"txnBlob"`
+	Id        string                 `codec:"id"`
 }
 
 type TestData struct {
@@ -111,6 +112,7 @@ func main() {
 		Stxn:      stxn,
 		StxnBlob:  protocol.Encode(&stxn),
 		TxnBlob:   protocol.Encode(&payTxn),
+		Id:        payTxn.ID().String(),
 	}
 
 	testData := TestData{

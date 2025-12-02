@@ -1,5 +1,6 @@
 {
   "simplePayment": {
+    "id": "NGSZLL2CYYMF4SED23XUSCVW6PBTCNGS73W5NMYB3GYG2NGEQBVA",
     "secretKey": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8DoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuA==",
     "stxn": {
       "sig": "nhKG5t96fQxZyYr5xck3HK/FCGH/IyS2Mj7r4+e+2jGQxvujkIEG77wGbW38Qd4SZXqjPNCqdan0Fbft4HPICQ==",
