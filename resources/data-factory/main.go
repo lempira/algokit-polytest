@@ -86,9 +86,9 @@ type TxData struct {
 }
 
 type Signer struct {
-	SingleSigner *crypto.SignatureSecrets   `codec:"singleSigner,omitempty"`
-	MsigSigners  [3]crypto.SignatureSecrets `codec:"msigSigners,omitempty"`
-	Lsig         []byte                     `codec:"lsig,omitempty"`
+	SingleSigner *crypto.SignatureSecrets  `codec:"singleSigner,omitempty"`
+	MsigSigners  []crypto.SignatureSecrets `codec:"msigSigners,omitempty"`
+	Lsig         []byte                    `codec:"lsig,omitempty"`
 }
 
 func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
@@ -125,12 +125,20 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 	}
 
 	if len(signer.Lsig) > 0 {
-		stxn.Txn.Sender = basics.Address(crypto.HashObj(logic.Program(signer.Lsig)))
+		program := logic.Program(signer.Lsig)
 		stxn.Lsig.Logic = signer.Lsig
+
+		if signer.SingleSigner != nil {
+			stxn.Txn.Sender = basics.Address(signer.SingleSigner.SignatureVerifier)
+			stxn.Lsig.Sig = signer.SingleSigner.Sign(program)
+		} else {
+			stxn.Txn.Sender = basics.Address(crypto.HashObj(program))
+		}
 	} else if signer.SingleSigner != nil {
 		stxn.Txn.Sender = basics.Address(signer.SingleSigner.SignatureVerifier)
 		stxn.Sig = signer.SingleSigner.Sign(stxn.Txn)
 	} else if len(signer.MsigSigners) > 0 {
+
 		var pks [3]crypto.PublicKey
 		for i := range signer.MsigSigners {
 			pks[i] = signer.MsigSigners[i].SignatureVerifier
@@ -174,9 +182,10 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 }
 
 type TestData struct {
-	SimplePayment TxData `codec:"simplePayment"`
-	MsigPayment   TxData `codec:"msigPayment"`
-	LsigPayment   TxData `codec:"lsigPayment"`
+	SimplePayment          TxData `codec:"simplePayment"`
+	MsigPayment            TxData `codec:"msigPayment"`
+	LsigPayment            TxData `codec:"lsigPayment"`
+	SingleDelegatedPayment TxData `codec:"singleDelegatedPayment"`
 }
 
 func main() {
@@ -191,7 +200,7 @@ func main() {
 	simplePayment := makeTxData(protocol.PaymentTx, payFields, simpleSigner)
 
 	msigSigner := Signer{
-		MsigSigners: [3]crypto.SignatureSecrets{*secrets[0], *secrets[1], *secrets[2]},
+		MsigSigners: []crypto.SignatureSecrets{*secrets[0], *secrets[1], *secrets[2]},
 	}
 
 	msigPayment := makeTxData(protocol.PaymentTx, payFields, msigSigner)
@@ -208,10 +217,18 @@ func main() {
 
 	lsigPayment := makeTxData(protocol.PaymentTx, payFields, lsigSigner)
 
+	delegatedSigner := Signer{
+		SingleSigner: secrets[0],
+		Lsig:         op.Program,
+	}
+
+	singleDelegatedPayment := makeTxData(protocol.PaymentTx, payFields, delegatedSigner)
+
 	testData := TestData{
-		SimplePayment: simplePayment,
-		MsigPayment:   msigPayment,
-		LsigPayment:   lsigPayment,
+		SimplePayment:          simplePayment,
+		MsigPayment:            msigPayment,
+		LsigPayment:            lsigPayment,
+		SingleDelegatedPayment: singleDelegatedPayment,
 	}
 
 	testDataJson := protocol.EncodeJSON(&testData)
