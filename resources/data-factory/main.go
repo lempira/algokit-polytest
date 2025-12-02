@@ -49,15 +49,30 @@ func generateSecrets(numAccs int) []*crypto.SignatureSecrets {
 	return secrets
 }
 
-type TxData struct {
-	SecretKey []byte                 `codec:"secretKey"`
-	Stxn      transactions.SignedTxn `codec:"stxn"`
-	StxnBlob  []byte                 `codec:"stxnBlob"`
-	TxnBlob   []byte                 `codec:"txnBlob"`
-	Id        string                 `codec:"id"`
+func generateMsigAddr(pks [3]crypto.PublicKey) basics.Address {
+	addr, err := crypto.MultisigAddrGen(1, 2, pks[:])
+
+	if err != nil {
+		panic(err)
+	}
+
+	return basics.Address(addr)
 }
 
-func makeTxData(txType protocol.TxType, fields any, secret *crypto.SignatureSecrets) TxData {
+type TxData struct {
+	Signer   Signer                 `codec:"signer"`
+	Stxn     transactions.SignedTxn `codec:"stxn"`
+	StxnBlob []byte                 `codec:"stxnBlob"`
+	TxnBlob  []byte                 `codec:"txnBlob"`
+	Id       string                 `codec:"id"`
+}
+
+type Signer struct {
+	SingleSigner *crypto.SignatureSecrets   `codec:"singleSigner,omitempty"`
+	MsigSigners  [3]crypto.SignatureSecrets `codec:"msigSigners,omitempty"`
+}
+
+func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 	ghB64 := "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI="
 
 	ghBytes, err := base64.StdEncoding.DecodeString(ghB64)
@@ -68,8 +83,20 @@ func makeTxData(txType protocol.TxType, fields any, secret *crypto.SignatureSecr
 	var gh [32]byte
 	copy(gh[:], ghBytes)
 
+	sender := basics.Address{}
+
+	if signer.SingleSigner != nil {
+		sender = basics.Address(signer.SingleSigner.SignatureVerifier)
+	} else if len(signer.MsigSigners) > 0 {
+		var pks [3]crypto.PublicKey
+		for i := range signer.MsigSigners {
+			pks[i] = signer.MsigSigners[i].SignatureVerifier
+		}
+		sender = generateMsigAddr(pks)
+	}
+
 	header := transactions.Header{
-		Sender:      basics.Address(secret.SignatureVerifier),
+		Sender:      sender,
 		FirstValid:  50659540,
 		LastValid:   50660540,
 		GenesisHash: gh,
@@ -93,7 +120,30 @@ func makeTxData(txType protocol.TxType, fields any, secret *crypto.SignatureSecr
 
 	stxn := transactions.SignedTxn{
 		Txn: txn,
-		Sig: secret.Sign(txn),
+	}
+
+	if signer.SingleSigner != nil {
+		stxn.Sig = signer.SingleSigner.Sign(txn)
+	} else if len(signer.MsigSigners) > 0 {
+		var pks []crypto.PublicKey
+		for i := range signer.MsigSigners {
+			pks = append(pks, signer.MsigSigners[i].SignatureVerifier)
+		}
+
+		stxn.Msig = crypto.MultisigSig{
+			Version:   1,
+			Threshold: 2,
+			Subsigs:   make([]crypto.MultisigSubsig, len(pks)),
+		}
+
+		var sigs [][]byte
+		for i := range signer.MsigSigners {
+			sig := signer.MsigSigners[i].Sign(txn)
+			sigs = append(sigs, sig[:])
+			stxn.Msig.Subsigs[i].Key = pks[i]
+			stxn.Msig.Subsigs[i].Sig = sig
+		}
+
 	}
 
 	stxns := make([]transactions.SignedTxn, 1)
@@ -107,27 +157,39 @@ func makeTxData(txType protocol.TxType, fields any, secret *crypto.SignatureSecr
 	}
 
 	return TxData{
-		SecretKey: secret.SK[:],
-		Stxn:      stxn,
-		StxnBlob:  protocol.Encode(&stxn),
-		TxnBlob:   protocol.Encode(&txn),
-		Id:        txn.ID().String(),
+		Signer:   signer,
+		Stxn:     stxn,
+		StxnBlob: protocol.Encode(&stxn),
+		TxnBlob:  protocol.Encode(&txn),
+		Id:       txn.ID().String(),
 	}
 }
 
 type TestData struct {
 	SimplePayment TxData `codec:"simplePayment"`
+	MsigPayment   TxData `codec:"msigPayment"`
 }
 
 func main() {
-	secrets := generateSecrets(1)
+	secrets := generateSecrets(3)
 
 	payFields := transactions.PaymentTxnFields{}
 
-	simplePayment := makeTxData(protocol.PaymentTx, payFields, secrets[0])
+	simpleSigner := Signer{
+		SingleSigner: secrets[0],
+	}
+
+	simplePayment := makeTxData(protocol.PaymentTx, payFields, simpleSigner)
+
+	msigSigner := Signer{
+		MsigSigners: [3]crypto.SignatureSecrets{*secrets[0], *secrets[1], *secrets[2]},
+	}
+
+	msigPayment := makeTxData(protocol.PaymentTx, payFields, msigSigner)
 
 	testData := TestData{
 		SimplePayment: simplePayment,
+		MsigPayment:   msigPayment,
 	}
 
 	testDataJson := protocol.EncodeJSON(&testData)

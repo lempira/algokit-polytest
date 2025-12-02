@@ -2,7 +2,10 @@ module github.com/algorandfoundation/algokit-polytest/resources/data-factory
 
 go 1.25.3
 
-require github.com/algorand/go-algorand v0.0.0
+require (
+	github.com/algorand/go-algorand v0.0.0
+	gonum.org/v1/gonum v0.15.0
+)
 
 require (
 	filippo.io/edwards25519 v1.0.0 // indirect
