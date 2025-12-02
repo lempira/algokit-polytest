@@ -3,10 +3,6 @@
   "package_name": "kmd_client",
   "version": "0.6.0",
   "suite": {
-    "GET swagger_json": {
-      "desc": "Tests for the GET /swagger.json endpoint",
-      "groups": ["Common Tests"]
-    },
     "GET versions": {
       "desc": "Tests for the GET /versions endpoint",
       "groups": ["Common Tests"]
