@@ -9,9 +9,27 @@ import (
 	"github.com/algorand/go-algorand/data/basics"
 	"github.com/algorand/go-algorand/data/bookkeeping"
 	"github.com/algorand/go-algorand/data/transactions"
+	"github.com/algorand/go-algorand/data/transactions/logic"
 	"github.com/algorand/go-algorand/data/transactions/verify"
+	"github.com/algorand/go-algorand/ledger/ledgercore"
 	"github.com/algorand/go-algorand/protocol"
 )
+
+type DummyLedgerForSignature struct{}
+
+func (d *DummyLedgerForSignature) BlockHdr(rnd basics.Round) (blk bookkeeping.BlockHeader, err error) {
+	return createDummyBlockHeader(), nil
+}
+
+func (d *DummyLedgerForSignature) GenesisHash() crypto.Digest {
+	return crypto.Digest{}
+}
+
+func (d *DummyLedgerForSignature) Latest() basics.Round {
+	return 0
+}
+
+func (d *DummyLedgerForSignature) RegisterBlockListeners([]ledgercore.BlockListener) {}
 
 // Values taken from data/transactions/verify/txn_test.go
 var feeSink = basics.Address{0x7, 0xda, 0xcb, 0x4b, 0x6d, 0x9e, 0xd1, 0x41, 0xb1, 0x75, 0x76, 0xbd, 0x45, 0x9a, 0xe6, 0x42, 0x1d, 0x48, 0x6d, 0xa3, 0xd4, 0xef, 0x22, 0x47, 0xc4, 0x9, 0xa3, 0x96, 0xb8, 0x2e, 0xa2, 0x21}
@@ -70,6 +88,7 @@ type TxData struct {
 type Signer struct {
 	SingleSigner *crypto.SignatureSecrets   `codec:"singleSigner,omitempty"`
 	MsigSigners  [3]crypto.SignatureSecrets `codec:"msigSigners,omitempty"`
+	Lsig         []byte                     `codec:"lsig,omitempty"`
 }
 
 func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
@@ -83,20 +102,8 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 	var gh [32]byte
 	copy(gh[:], ghBytes)
 
-	sender := basics.Address{}
-
-	if signer.SingleSigner != nil {
-		sender = basics.Address(signer.SingleSigner.SignatureVerifier)
-	} else if len(signer.MsigSigners) > 0 {
-		var pks [3]crypto.PublicKey
-		for i := range signer.MsigSigners {
-			pks[i] = signer.MsigSigners[i].SignatureVerifier
-		}
-		sender = generateMsigAddr(pks)
-	}
-
 	header := transactions.Header{
-		Sender:      sender,
+		// No Sender because it is set later
 		FirstValid:  50659540,
 		LastValid:   50660540,
 		GenesisHash: gh,
@@ -104,11 +111,10 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 		Fee:         basics.MicroAlgos{Raw: 1000},
 	}
 
-	txn := transactions.Transaction{}
-
+	stxn := transactions.SignedTxn{}
 	switch txType {
 	case protocol.PaymentTx:
-		txn = transactions.Transaction{
+		stxn.Txn = transactions.Transaction{
 			Type:             protocol.PaymentTx,
 			Header:           header,
 			PaymentTxnFields: fields.(transactions.PaymentTxnFields),
@@ -118,17 +124,19 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 		panic("Unsupported transaction type")
 	}
 
-	stxn := transactions.SignedTxn{
-		Txn: txn,
-	}
-
-	if signer.SingleSigner != nil {
-		stxn.Sig = signer.SingleSigner.Sign(txn)
+	if len(signer.Lsig) > 0 {
+		stxn.Txn.Sender = basics.Address(crypto.HashObj(logic.Program(signer.Lsig)))
+		stxn.Lsig.Logic = signer.Lsig
+	} else if signer.SingleSigner != nil {
+		stxn.Txn.Sender = basics.Address(signer.SingleSigner.SignatureVerifier)
+		stxn.Sig = signer.SingleSigner.Sign(stxn.Txn)
 	} else if len(signer.MsigSigners) > 0 {
-		var pks []crypto.PublicKey
+		var pks [3]crypto.PublicKey
 		for i := range signer.MsigSigners {
-			pks = append(pks, signer.MsigSigners[i].SignatureVerifier)
+			pks[i] = signer.MsigSigners[i].SignatureVerifier
 		}
+
+		stxn.Txn.Sender = generateMsigAddr(pks)
 
 		stxn.Msig = crypto.MultisigSig{
 			Version:   1,
@@ -138,20 +146,20 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 
 		var sigs [][]byte
 		for i := range signer.MsigSigners {
-			sig := signer.MsigSigners[i].Sign(txn)
+			sig := signer.MsigSigners[i].Sign(stxn.Txn)
 			sigs = append(sigs, sig[:])
 			stxn.Msig.Subsigs[i].Key = pks[i]
 			stxn.Msig.Subsigs[i].Sig = sig
 		}
 
 	}
-
 	stxns := make([]transactions.SignedTxn, 1)
 	stxns[0] = stxn
 
 	blkHdr := createDummyBlockHeader()
+	ledger := DummyLedgerForSignature{}
 
-	_, err = verify.TxnGroup(stxns, &blkHdr, nil, nil)
+	_, err = verify.TxnGroup(stxns, &blkHdr, nil, &ledger)
 	if err != nil {
 		panic(err)
 	}
@@ -160,14 +168,15 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 		Signer:   signer,
 		Stxn:     stxn,
 		StxnBlob: protocol.Encode(&stxn),
-		TxnBlob:  protocol.Encode(&txn),
-		Id:       txn.ID().String(),
+		TxnBlob:  protocol.Encode(&stxn.Txn),
+		Id:       stxn.Txn.ID().String(),
 	}
 }
 
 type TestData struct {
 	SimplePayment TxData `codec:"simplePayment"`
 	MsigPayment   TxData `codec:"msigPayment"`
+	LsigPayment   TxData `codec:"lsigPayment"`
 }
 
 func main() {
@@ -187,15 +196,28 @@ func main() {
 
 	msigPayment := makeTxData(protocol.PaymentTx, payFields, msigSigner)
 
+	op, err := logic.AssembleString("int 1")
+
+	if err != nil {
+		panic(err)
+	}
+
+	lsigSigner := Signer{
+		Lsig: op.Program,
+	}
+
+	lsigPayment := makeTxData(protocol.PaymentTx, payFields, lsigSigner)
+
 	testData := TestData{
 		SimplePayment: simplePayment,
 		MsigPayment:   msigPayment,
+		LsigPayment:   lsigPayment,
 	}
 
 	testDataJson := protocol.EncodeJSON(&testData)
 	testDataFile := "transact_test_data.json"
 
-	err := os.WriteFile(testDataFile, testDataJson, 0644)
+	err = os.WriteFile(testDataFile, testDataJson, 0644)
 	if err != nil {
 		panic(err)
 	}
