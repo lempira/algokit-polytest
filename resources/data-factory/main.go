@@ -57,13 +57,7 @@ type TxData struct {
 	Id        string                 `codec:"id"`
 }
 
-type TestData struct {
-	SimplePayment TxData `codec:"simplePayment"`
-}
-
-func main() {
-	secrets := generateSecrets(1)
-
+func makeTxData(txType protocol.TxType, fields any, secret *crypto.SignatureSecrets) TxData {
 	ghB64 := "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI="
 
 	ghBytes, err := base64.StdEncoding.DecodeString(ghB64)
@@ -75,7 +69,7 @@ func main() {
 	copy(gh[:], ghBytes)
 
 	header := transactions.Header{
-		Sender:      basics.Address(secrets[0].SignatureVerifier),
+		Sender:      basics.Address(secret.SignatureVerifier),
 		FirstValid:  50659540,
 		LastValid:   50660540,
 		GenesisHash: gh,
@@ -83,48 +77,63 @@ func main() {
 		Fee:         basics.MicroAlgos{Raw: 1000},
 	}
 
-	payFields := transactions.PaymentTxnFields{}
-	payTxn := transactions.Transaction{
-		Type:             protocol.PaymentTx,
-		Header:           header,
-		PaymentTxnFields: payFields,
+	txn := transactions.Transaction{}
+
+	switch txType {
+	case protocol.PaymentTx:
+		txn = transactions.Transaction{
+			Type:             protocol.PaymentTx,
+			Header:           header,
+			PaymentTxnFields: fields.(transactions.PaymentTxnFields),
+		}
+	// Add other transaction types as needed
+	default:
+		panic("Unsupported transaction type")
 	}
 
 	stxn := transactions.SignedTxn{
-		Txn: payTxn,
-		Sig: secrets[0].Sign(payTxn),
+		Txn: txn,
+		Sig: secret.Sign(txn),
 	}
-
-	blkHdr := createDummyBlockHeader()
 
 	stxns := make([]transactions.SignedTxn, 1)
 	stxns[0] = stxn
+
+	blkHdr := createDummyBlockHeader()
 
 	_, err = verify.TxnGroup(stxns, &blkHdr, nil, nil)
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println("Transaction group verified successfully")
-
-	txData := TxData{
-		SecretKey: secrets[0].SK[:],
+	return TxData{
+		SecretKey: secret.SK[:],
 		Stxn:      stxn,
 		StxnBlob:  protocol.Encode(&stxn),
-		TxnBlob:   protocol.Encode(&payTxn),
-		Id:        payTxn.ID().String(),
+		TxnBlob:   protocol.Encode(&txn),
+		Id:        txn.ID().String(),
 	}
+}
+
+type TestData struct {
+	SimplePayment TxData `codec:"simplePayment"`
+}
+
+func main() {
+	secrets := generateSecrets(1)
+
+	payFields := transactions.PaymentTxnFields{}
+
+	simplePayment := makeTxData(protocol.PaymentTx, payFields, secrets[0])
 
 	testData := TestData{
-		SimplePayment: txData,
+		SimplePayment: simplePayment,
 	}
 
 	testDataJson := protocol.EncodeJSON(&testData)
-	fmt.Println("Test data encoded to JSON:", string(testDataJson))
-
 	testDataFile := "transact_test_data.json"
 
-	err = os.WriteFile(testDataFile, testDataJson, 0644)
+	err := os.WriteFile(testDataFile, testDataJson, 0644)
 	if err != nil {
 		panic(err)
 	}
