@@ -91,14 +91,23 @@ export async function startServer(
       return;
     }
 
-    const data = await response.text();
+    // Handle binary msgpack responses correctly - use arrayBuffer() instead of text()
+    // to avoid UTF-8 corruption of binary data
+    const contentType = response.headers.get("content-type") || "";
+    const isBinary = contentType.includes("msgpack") || contentType.includes("octet-stream");
+    const data = isBinary
+      ? Buffer.from(await response.arrayBuffer())
+      : await response.text();
 
     fastify.log.debug(`[PollyJS] Response status: ${response.status}`);
-    fastify.log.debug(`[PollyJS] Response size: ${data.length} bytes`);
+    fastify.log.debug(`[PollyJS] Response content-type: ${contentType}`);
+    fastify.log.debug(`[PollyJS] Response is binary: ${isBinary}`);
+    fastify.log.debug(`[PollyJS] Response size: ${isBinary ? (data as Buffer).length : (data as string).length} bytes`);
 
-    // Log response preview (first 200 chars)
-    const preview = data.length > 200 ? data.substring(0, 200) + "..." : data;
-    fastify.log.debug(`[PollyJS] Response preview: ${preview}`);
+    if (!isBinary) {
+      const preview = (data as string).length > 200 ? (data as string).substring(0, 200) + "..." : data;
+      fastify.log.debug(`[PollyJS] Response preview: ${preview}`);
+    }
 
     reply
       .code(response.status)
