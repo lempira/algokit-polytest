@@ -18,4 +18,4 @@ else
 fi
 
 docker buildx build -t mock-server $DOCKER_DIR/..
-docker run --rm -p $PORT:$PORT --name mock-$1-instance mock-server $1
+docker run -d --rm -p $PORT:$PORT --name mock-$1-instance mock-server $1
