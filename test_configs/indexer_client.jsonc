@@ -1,7 +1,7 @@
 {
   "name": "indexer_client Test Plan",
   "package_name": "indexer_client",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "suite": {
     "GET health": {
       "desc": "Tests for the /health endpoint",
