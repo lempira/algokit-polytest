@@ -220,32 +220,30 @@ func addr(signer Signer) basics.Address {
 	}
 }
 
-func main() {
-	secrets := generateSecrets(3)
-
+func makeSimplePayment(signer Signer) TxData {
 	payFields := transactions.PaymentTxnFields{}
 
-	simpleSigner := Signer{
-		SingleSigner: secrets[0],
-	}
+	return makeTxData(protocol.PaymentTx, payFields, signer)
+}
 
-	simplePayment := makeTxData(protocol.PaymentTx, payFields, simpleSigner)
-
-	assetId := basics.AssetIndex(107686045)
-
+func makeOptInAssetTransfer(signer Signer, assetId basics.AssetIndex) TxData {
 	optInFields := transactions.AssetTransferTxnFields{
 		XferAsset:     assetId,
 		AssetAmount:   0,
-		AssetReceiver: addr(simpleSigner),
+		AssetReceiver: addr(signer),
 	}
 
-	optInAssetTransfer := makeTxData(protocol.AssetTransferTx, optInFields, simpleSigner)
+	return makeTxData(protocol.AssetTransferTx, optInFields, signer)
+}
 
+func main() {
+	secrets := generateSecrets(3)
+	simpleSigner := Signer{
+		SingleSigner: secrets[0],
+	}
 	msigSigner := Signer{
 		MsigSigners: []crypto.SignatureSecrets{*secrets[0], *secrets[1], *secrets[2]},
 	}
-
-	msigPayment := makeTxData(protocol.PaymentTx, payFields, msigSigner)
 
 	op, err := logic.AssembleString("int 1")
 
@@ -257,29 +255,25 @@ func main() {
 		Lsig: op.Program,
 	}
 
-	lsigPayment := makeTxData(protocol.PaymentTx, payFields, lsigSigner)
-
 	delegatedSigner := Signer{
 		SingleSigner: secrets[0],
 		Lsig:         op.Program,
 	}
-
-	singleDelegatedPayment := makeTxData(protocol.PaymentTx, payFields, delegatedSigner)
 
 	msigDelegatedSigner := Signer{
 		MsigSigners: []crypto.SignatureSecrets{*secrets[0], *secrets[1], *secrets[2]},
 		Lsig:        op.Program,
 	}
 
-	msigDelegatedPayment := makeTxData(protocol.PaymentTx, payFields, msigDelegatedSigner)
+	assetId := basics.AssetIndex(107686045)
 
 	testData := TestData{
-		SimplePayment:          simplePayment,
-		OptInAssetTransfer:     optInAssetTransfer,
-		MsigPayment:            msigPayment,
-		LsigPayment:            lsigPayment,
-		SingleDelegatedPayment: singleDelegatedPayment,
-		MsigDelegatedPayment:   msigDelegatedPayment,
+		SimplePayment:          makeSimplePayment(simpleSigner),
+		OptInAssetTransfer:     makeOptInAssetTransfer(simpleSigner, assetId),
+		MsigPayment:            makeSimplePayment(msigSigner),
+		LsigPayment:            makeSimplePayment(lsigSigner),
+		SingleDelegatedPayment: makeSimplePayment(delegatedSigner),
+		MsigDelegatedPayment:   makeSimplePayment(msigDelegatedSigner),
 	}
 
 	testDataJson := protocol.EncodeJSON(&testData)
