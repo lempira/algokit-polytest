@@ -102,8 +102,25 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 	var gh [32]byte
 	copy(gh[:], ghBytes)
 
-	header := transactions.Header{
-		// No Sender because it is set later
+	stxn := transactions.SignedTxn{}
+
+	switch txType {
+	case protocol.PaymentTx:
+		stxn.Txn = transactions.Transaction{
+			Type:             protocol.PaymentTx,
+			PaymentTxnFields: fields.(transactions.PaymentTxnFields),
+		}
+	case protocol.AssetTransferTx:
+		stxn.Txn = transactions.Transaction{
+			Type:                   protocol.AssetTransferTx,
+			AssetTransferTxnFields: fields.(transactions.AssetTransferTxnFields),
+		}
+	default:
+		panic("Unsupported transaction type")
+	}
+
+	stxn.Txn.Header = transactions.Header{
+		Sender:      addr(signer),
 		FirstValid:  50659540,
 		LastValid:   50660540,
 		GenesisHash: gh,
@@ -111,25 +128,11 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 		Fee:         basics.MicroAlgos{Raw: 1000},
 	}
 
-	stxn := transactions.SignedTxn{}
-	switch txType {
-	case protocol.PaymentTx:
-		stxn.Txn = transactions.Transaction{
-			Type:             protocol.PaymentTx,
-			Header:           header,
-			PaymentTxnFields: fields.(transactions.PaymentTxnFields),
-		}
-	// Add other transaction types as needed
-	default:
-		panic("Unsupported transaction type")
-	}
-
 	if len(signer.Lsig) > 0 {
 		program := logic.Program(signer.Lsig)
 		stxn.Lsig.Logic = signer.Lsig
 
 		if signer.SingleSigner != nil {
-			stxn.Txn.Sender = basics.Address(signer.SingleSigner.SignatureVerifier)
 			stxn.Lsig.Sig = signer.SingleSigner.Sign(program)
 		} else if len(signer.MsigSigners) > 0 {
 			var pks [3]crypto.PublicKey
@@ -137,7 +140,6 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 				pks[i] = signer.MsigSigners[i].SignatureVerifier
 			}
 
-			stxn.Txn.Sender = generateMsigAddr(pks)
 			toBeSigned := logic.MultisigProgram{Addr: crypto.Digest(stxn.Txn.Sender), Program: program}
 
 			stxn.Lsig.LMsig.Threshold = 2
@@ -150,20 +152,14 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 				stxn.Lsig.LMsig.Subsigs[i].Sig = sig
 			}
 
-		} else {
-			stxn.Txn.Sender = basics.Address(crypto.HashObj(program))
 		}
 	} else if signer.SingleSigner != nil {
-		stxn.Txn.Sender = basics.Address(signer.SingleSigner.SignatureVerifier)
 		stxn.Sig = signer.SingleSigner.Sign(stxn.Txn)
 	} else if len(signer.MsigSigners) > 0 {
-
 		var pks [3]crypto.PublicKey
 		for i := range signer.MsigSigners {
 			pks[i] = signer.MsigSigners[i].SignatureVerifier
 		}
-
-		stxn.Txn.Sender = generateMsigAddr(pks)
 
 		stxn.Msig = crypto.MultisigSig{
 			Version:   1,
@@ -202,10 +198,26 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 
 type TestData struct {
 	SimplePayment          TxData `codec:"simplePayment"`
+	OptInAssetTransfer     TxData `codec:"optInAssetTransfer"`
 	MsigPayment            TxData `codec:"msigPayment"`
 	LsigPayment            TxData `codec:"lsigPayment"`
 	SingleDelegatedPayment TxData `codec:"singleDelegatedPayment"`
 	MsigDelegatedPayment   TxData `codec:"msigDelegatedPayment"`
+}
+
+func addr(signer Signer) basics.Address {
+	if signer.SingleSigner != nil {
+		return basics.Address(signer.SingleSigner.SignatureVerifier)
+	} else if len(signer.MsigSigners) > 0 {
+		var pks [3]crypto.PublicKey
+		for i := range signer.MsigSigners {
+			pks[i] = signer.MsigSigners[i].SignatureVerifier
+		}
+		return generateMsigAddr(pks)
+	} else {
+		program := logic.Program(signer.Lsig)
+		return basics.Address(crypto.HashObj(program))
+	}
 }
 
 func main() {
@@ -218,6 +230,16 @@ func main() {
 	}
 
 	simplePayment := makeTxData(protocol.PaymentTx, payFields, simpleSigner)
+
+	assetId := basics.AssetIndex(107686045)
+
+	optInFields := transactions.AssetTransferTxnFields{
+		XferAsset:     assetId,
+		AssetAmount:   0,
+		AssetReceiver: addr(simpleSigner),
+	}
+
+	optInAssetTransfer := makeTxData(protocol.AssetTransferTx, optInFields, simpleSigner)
 
 	msigSigner := Signer{
 		MsigSigners: []crypto.SignatureSecrets{*secrets[0], *secrets[1], *secrets[2]},
@@ -253,6 +275,7 @@ func main() {
 
 	testData := TestData{
 		SimplePayment:          simplePayment,
+		OptInAssetTransfer:     optInAssetTransfer,
 		MsigPayment:            msigPayment,
 		LsigPayment:            lsigPayment,
 		SingleDelegatedPayment: singleDelegatedPayment,
