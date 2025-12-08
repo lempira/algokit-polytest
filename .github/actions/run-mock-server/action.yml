@@ -1,0 +1,130 @@
+name: "Run Mock Server"
+description: "Start a mock server for testing Algorand API clients (algod, indexer, kmd)"
+
+inputs:
+  client:
+    description: "The client type to mock (algod, indexer, kmd)"
+    required: true
+  port:
+    description: "Port to run the server on (defaults: algod=8000, indexer=8002, kmd=8001)"
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Determine port
+      id: port
+      shell: bash
+      run: |
+        set -euo pipefail
+        
+        CLIENT="${{ inputs.client }}"
+        PORT="${{ inputs.port }}"
+        
+        # Validate client type
+        if [[ ! "$CLIENT" =~ ^(algod|indexer|kmd)$ ]]; then
+          echo "::error::Invalid client type '$CLIENT'. Must be one of: algod, indexer, kmd"
+          exit 1
+        fi
+        
+        # Set default port based on client type if not provided
+        if [[ -z "$PORT" ]]; then
+          case "$CLIENT" in
+            algod)   PORT=8000 ;;
+            indexer) PORT=8002 ;;
+            kmd)     PORT=8001 ;;
+          esac
+        fi
+        
+        # Validate port is a number
+        if [[ ! "$PORT" =~ ^[0-9]+$ ]]; then
+          echo "::error::Invalid port '$PORT'. Must be a number"
+          exit 1
+        fi
+        
+        echo "port=$PORT" >> "$GITHUB_OUTPUT"
+        echo "Using port $PORT for $CLIENT mock server"
+
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v2
+
+    - name: Install mock-server dependencies
+      shell: bash
+      working-directory: ${{ github.action_path }}/../../../resources/mock-server
+      run: |
+        set -euo pipefail
+        bun install --frozen-lockfile
+
+    - name: Start mock server
+      shell: bash
+      working-directory: ${{ github.action_path }}/../../../resources/mock-server
+      run: |
+        set -euo pipefail
+        
+        CLIENT="${{ inputs.client }}"
+        PORT="${{ steps.port.outputs.port }}"
+        CLIENT_UPPER=$(echo "$CLIENT" | tr '[:lower:]' '[:upper:]')
+        
+        echo "Starting $CLIENT mock server on port $PORT..."
+        
+        # Export port for the mock server to read
+        export "${CLIENT_UPPER}_PORT=$PORT"
+        
+        # Start server in background with nohup
+        nohup bun bin/server.ts "$CLIENT" > /tmp/mock-server-${CLIENT}.log 2>&1 &
+        SERVER_PID=$!
+        
+        echo "Mock server started with PID $SERVER_PID"
+        echo "MOCK_SERVER_PID=$SERVER_PID" >> "$GITHUB_ENV"
+
+    - name: Wait for health check
+      shell: bash
+      run: |
+        set -euo pipefail
+        
+        CLIENT="${{ inputs.client }}"
+        PORT="${{ steps.port.outputs.port }}"
+        HEALTH_URL="http://localhost:${PORT}/health"
+        MAX_RETRIES=30
+        RETRY_INTERVAL=1
+        
+        echo "Waiting for $CLIENT mock server health check at $HEALTH_URL..."
+        
+        for ((i=1; i<=MAX_RETRIES; i++)); do
+          # Use -s (silent) and check HTTP status code
+          # Accept ANY HTTP response (even 4xx/5xx) as server being ready
+          # The mock server returns 500 for unrecorded endpoints like /health
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 2 "$HEALTH_URL" 2>/dev/null || echo "000")
+          
+          if [[ "$HTTP_CODE" != "000" ]]; then
+            echo "Mock server is responding (HTTP $HTTP_CODE) after $i seconds"
+            break
+          fi
+          
+          if [[ $i -eq $MAX_RETRIES ]]; then
+            echo "::error::Health check failed after ${MAX_RETRIES} seconds"
+            echo "Server logs:"
+            cat /tmp/mock-server-${CLIENT}.log 2>/dev/null || echo "No logs available"
+            exit 1
+          fi
+          
+          echo "Attempt $i/$MAX_RETRIES: Server not ready, retrying in ${RETRY_INTERVAL}s..."
+          sleep "$RETRY_INTERVAL"
+        done
+
+    - name: Export environment variables
+      shell: bash
+      run: |
+        set -euo pipefail
+        
+        CLIENT="${{ inputs.client }}"
+        PORT="${{ steps.port.outputs.port }}"
+        URL="http://localhost:${PORT}"
+        
+        # Convert client to uppercase for env var name
+        CLIENT_UPPER=$(echo "$CLIENT" | tr '[:lower:]' '[:upper:]')
+        ENV_VAR_NAME="MOCK_${CLIENT_UPPER}_URL"
+        
+        echo "${ENV_VAR_NAME}=${URL}" >> "$GITHUB_ENV"
+        echo "Exported $ENV_VAR_NAME=$URL"

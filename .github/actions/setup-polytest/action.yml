@@ -1,0 +1,17 @@
+name: Setup Polytest
+description: Install Rust and polytest CLI
+
+inputs:
+  version:
+    description: Polytest version (empty for latest)
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - uses: dtolnay/rust-toolchain@stable
+
+    - name: Install polytest
+      shell: bash
+      run: cargo install polytest --locked ${{ inputs.version && format('--version {0}', inputs.version) || '' }}

@@ -1,21 +1,46 @@
 #!/bin/bash
+set -euo pipefail
 
-DOCKER_DIR=$(dirname "$0")
+SCRIPT_DIR=$(dirname "$0")
+MOCK_SERVER_DIR="$SCRIPT_DIR/.."
 
-# Stop and remove any existing container with the same name
-docker rm --force mock-$1-instance 2>/dev/null || true
-
-# Select port based on the arg
-if [ "$1" == "algod" ]; then
-    PORT=8000
-elif [ "$1" == "kmd" ]; then
-    PORT=8001
-elif [ "$1" == "indexer" ]; then
-    PORT=8002
-else
+# Validate argument
+if [[ $# -lt 1 ]] || [[ ! "$1" =~ ^(algod|kmd|indexer)$ ]]; then
     echo "Usage: $0 {algod|kmd|indexer}"
+    echo ""
+    echo "Starts a mock server for the specified client type using bun."
+    echo ""
+    echo "Examples:"
+    echo "  $0 algod     # Start algod mock on port 8000"
+    echo "  $0 kmd       # Start kmd mock on port 8001"
+    echo "  $0 indexer   # Start indexer mock on port 8002"
     exit 1
 fi
 
-docker buildx build -t mock-server $DOCKER_DIR/..
-docker run -d --rm -p $PORT:$PORT --name mock-$1-instance mock-server $1
+CLIENT="$1"
+
+# Select port based on client type
+case "$CLIENT" in
+    algod)   PORT=8000 ;;
+    kmd)     PORT=8001 ;;
+    indexer) PORT=8002 ;;
+esac
+
+# Check if bun is installed
+if ! command -v bun &> /dev/null; then
+    echo "Error: bun is not installed. Install it with: curl -fsSL https://bun.sh/install | bash"
+    exit 1
+fi
+
+# Install dependencies if needed
+if [[ ! -d "$MOCK_SERVER_DIR/node_modules" ]]; then
+    echo "Installing dependencies..."
+    cd "$MOCK_SERVER_DIR"
+    bun install --frozen-lockfile
+fi
+
+# Set port and start server
+cd "$MOCK_SERVER_DIR"
+echo "Starting $CLIENT mock server on port $PORT..."
+export "${CLIENT^^}_PORT=$PORT"
+exec bun bin/server.ts "$CLIENT"
