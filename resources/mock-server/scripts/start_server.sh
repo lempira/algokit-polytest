@@ -42,5 +42,6 @@ fi
 # Set port and start server
 cd "$MOCK_SERVER_DIR"
 echo "Starting $CLIENT mock server on port $PORT..."
-export "${CLIENT^^}_PORT=$PORT"
+CLIENT_UPPER=$(echo "$CLIENT" | tr '[:lower:]' '[:upper:]')
+export "${CLIENT_UPPER}_PORT=$PORT"
 exec bun bin/server.ts "$CLIENT"

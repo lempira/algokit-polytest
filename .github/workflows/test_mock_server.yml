@@ -25,3 +25,41 @@ jobs:
       - name: Run tests
         working-directory: ./resources/mock-server
         run: bun run test
+
+  scripts-integration:
+    name: Scripts (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      
+      - name: Install dependencies
+        working-directory: ./resources/mock-server
+        run: bun install
+      
+      - name: Validate start_server.sh
+        working-directory: ./resources/mock-server
+        run: |
+          chmod +x scripts/*.sh
+          scripts/start_server.sh 2>&1 | grep -q "Usage:"
+      
+      - name: Test server lifecycle
+        working-directory: ./resources/mock-server
+        run: |
+          scripts/start_all_servers.sh
+          
+          for port in 8000 8001 8002; do
+            curl --max-time 5 "http://localhost:$port" -o /dev/null 2>/dev/null
+          done
+          
+          scripts/stop_all_servers.sh
+          sleep 2
+          
+          for port in 8000 8001 8002; do
+            ! curl --max-time 2 "http://localhost:$port" 2>/dev/null
+          done

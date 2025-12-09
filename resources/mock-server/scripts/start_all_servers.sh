@@ -26,7 +26,7 @@ cd "$MOCK_SERVER_DIR"
 start_server() {
     local client=$1
     local port=$2
-    local env_var="${client^^}_PORT"
+    local env_var="$(echo "$client" | tr '[:lower:]' '[:upper:]')_PORT"
     
     echo "Starting $client mock server on port $port..."
     export "$env_var=$port"
@@ -45,23 +45,25 @@ echo "Waiting for servers to be ready..."
 # Wait for all servers to be healthy
 all_healthy=true
 for port in 8000 8001 8002; do
-    for i in {1..30}; do
-        # Accept ANY HTTP response (even 500) as server being ready
-        # The mock server returns 500 for unrecorded endpoints like /health
-        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 2 "http://localhost:$port/health" 2>/dev/null || echo "000")
-        if [[ "$HTTP_CODE" != "000" ]]; then
-            echo "  Port $port: ready (HTTP $HTTP_CODE)"
+    server_ready=false
+    i=0
+    while [ $i -lt 30 ]; do
+        # Accept ANY HTTP response as server being ready
+        if curl -s -o /dev/null --max-time 2 "http://localhost:$port/health" 2>/dev/null; then
+            echo "  Port $port: ready"
+            server_ready=true
             break
         fi
-        if [[ $i -eq 30 ]]; then
-            echo "  Port $port: FAILED (timeout)"
-            all_healthy=false
-        fi
         sleep 1
+        i=$((i + 1))
     done
+    if ! $server_ready; then
+        echo "  Port $port: FAILED (timeout)"
+        all_healthy=false
+    fi
 done
 
-if [[ "$all_healthy" != true ]]; then
+if ! $all_healthy; then
     echo ""
     echo "Some servers failed to start. Check logs in /tmp/mock-*.log"
     exit 1
