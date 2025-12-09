@@ -35,6 +35,9 @@ func (d *DummyLedgerForSignature) RegisterBlockListeners([]ledgercore.BlockListe
 var feeSink = basics.Address{0x7, 0xda, 0xcb, 0x4b, 0x6d, 0x9e, 0xd1, 0x41, 0xb1, 0x75, 0x76, 0xbd, 0x45, 0x9a, 0xe6, 0x42, 0x1d, 0x48, 0x6d, 0xa3, 0xd4, 0xef, 0x22, 0x47, 0xc4, 0x9, 0xa3, 0x96, 0xb8, 0x2e, 0xa2, 0x21}
 var poolAddr = basics.Address{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}
 
+const assetId = basics.AssetIndex(107686045)
+const appId = basics.AppIndex(84366825)
+
 func createDummyBlockHeader() bookkeeping.BlockHeader {
 	proto := protocol.ConsensusCurrentVersion
 
@@ -107,18 +110,21 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 	switch txType {
 	case protocol.PaymentTx:
 		stxn.Txn = transactions.Transaction{
-			Type:             protocol.PaymentTx,
 			PaymentTxnFields: fields.(transactions.PaymentTxnFields),
 		}
 	case protocol.AssetTransferTx:
 		stxn.Txn = transactions.Transaction{
-			Type:                   protocol.AssetTransferTx,
 			AssetTransferTxnFields: fields.(transactions.AssetTransferTxnFields),
+		}
+	case protocol.ApplicationCallTx:
+		stxn.Txn = transactions.Transaction{
+			ApplicationCallTxnFields: fields.(transactions.ApplicationCallTxnFields),
 		}
 	default:
 		panic("Unsupported transaction type")
 	}
 
+	stxn.Txn.Type = txType
 	stxn.Txn.Header = transactions.Header{
 		Sender:      addr(signer),
 		FirstValid:  50659540,
@@ -199,6 +205,8 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 type TestData struct {
 	SimplePayment          TxData `codec:"simplePayment"`
 	OptInAssetTransfer     TxData `codec:"optInAssetTransfer"`
+	AppCreate              TxData `codec:"appCreate"`
+	AppUpdate              TxData `codec:"appUpdate"`
 	MsigPayment            TxData `codec:"msigPayment"`
 	LsigPayment            TxData `codec:"lsigPayment"`
 	SingleDelegatedPayment TxData `codec:"singleDelegatedPayment"`
@@ -226,7 +234,7 @@ func makeSimplePayment(signer Signer) TxData {
 	return makeTxData(protocol.PaymentTx, payFields, signer)
 }
 
-func makeOptInAssetTransfer(signer Signer, assetId basics.AssetIndex) TxData {
+func makeOptInAssetTransfer(signer Signer) TxData {
 	optInFields := transactions.AssetTransferTxnFields{
 		XferAsset:     assetId,
 		AssetAmount:   0,
@@ -234,6 +242,37 @@ func makeOptInAssetTransfer(signer Signer, assetId basics.AssetIndex) TxData {
 	}
 
 	return makeTxData(protocol.AssetTransferTx, optInFields, signer)
+}
+
+func makeAppCreate(signer Signer, program []byte) TxData {
+	appCreateFields := transactions.ApplicationCallTxnFields{
+		ApplicationID:     0,
+		OnCompletion:      transactions.NoOpOC,
+		ApprovalProgram:   program,
+		ClearStateProgram: program,
+		GlobalStateSchema: basics.StateSchema{
+			NumUint:      0,
+			NumByteSlice: 1,
+		},
+		LocalStateSchema: basics.StateSchema{
+			NumUint:      2,
+			NumByteSlice: 3,
+		},
+		ExtraProgramPages: 3,
+	}
+
+	return makeTxData(protocol.ApplicationCallTx, appCreateFields, signer)
+}
+
+func makeAppUpdate(signer Signer, program []byte) TxData {
+	appUpdateFields := transactions.ApplicationCallTxnFields{
+		ApplicationID:     appId,
+		OnCompletion:      transactions.UpdateApplicationOC,
+		ApprovalProgram:   program,
+		ClearStateProgram: program,
+	}
+
+	return makeTxData(protocol.ApplicationCallTx, appUpdateFields, signer)
 }
 
 func main() {
@@ -265,11 +304,11 @@ func main() {
 		Lsig:        op.Program,
 	}
 
-	assetId := basics.AssetIndex(107686045)
-
 	testData := TestData{
 		SimplePayment:          makeSimplePayment(simpleSigner),
-		OptInAssetTransfer:     makeOptInAssetTransfer(simpleSigner, assetId),
+		OptInAssetTransfer:     makeOptInAssetTransfer(simpleSigner),
+		AppCreate:              makeAppCreate(simpleSigner, op.Program),
+		AppUpdate:              makeAppUpdate(simpleSigner, op.Program),
 		MsigPayment:            makeSimplePayment(msigSigner),
 		LsigPayment:            makeSimplePayment(lsigSigner),
 		SingleDelegatedPayment: makeSimplePayment(delegatedSigner),
