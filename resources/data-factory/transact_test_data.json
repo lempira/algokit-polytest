@@ -1,4 +1,28 @@
 {
+  "appCall": {
+    "id": "GI4TPEU3KBZO64CQMA3JEVKC5JMK57437DJA4L2KAXV5JNAYECYQ",
+    "signer": {
+      "singleSigner": {
+        "SK": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8DoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuA==",
+        "SignatureVerifier": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg="
+      }
+    },
+    "stxn": {
+      "sig": "akMCSfcn/hQ1+etke/M6sPjH+7kzwUL9TVGkv1r7rRBXugF7RG2oIaXK1HYjozMkpAIyVANsMaGgjUOG4BfXAA==",
+      "txn": {
+        "apid": 84366825,
+        "fee": 1000,
+        "fv": 50659540,
+        "gen": "testnet-v1.0",
+        "gh": "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+        "lv": 50660540,
+        "snd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "type": "appl"
+      }
+    },
+    "stxnBlob": "gqNzaWfEQGpDAkn3J/4UNfnrZHvzOrD4x/u5M8FC/U1RpL9a+60QV7oBe0RtqCGlytR2I6MzJKQCMlQDbDGhoI1DhuAX1wCjdHhuiKRhcGlkzgUHVemjZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYXBwbA==",
+    "txnBlob": "iKRhcGlkzgUHVemjZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYXBwbA=="
+  },
   "appCreate": {
     "id": "UTDOIJA2G7UQA22FRJ7HOY3IEAUM6H35C6NTYQ7NIMJ6FDRJ3V4A",
     "signer": {
@@ -32,6 +56,31 @@
     "stxnBlob": "gqNzaWfEQEmQNknW/DC6XcwFanKxbNEVZo0H+0Ia25UM1CHYvIzebOmIIfXWERCj2rFk6N+tZMeyJX0wa2mCNM/jhy549gSjdHhujKRhcGFwxAUBIAEBIqRhcGVwA6RhcGdzgaNuYnMBpGFwbHOCo25icwOjbnVpAqRhcHN1xAUBIAEBIqNmZWXNA+iiZnbOAwUA1KNnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4DBQS8o3NuZMQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbikdHlwZaRhcHBs",
     "txnBlob": "jKRhcGFwxAUBIAEBIqRhcGVwA6RhcGdzgaNuYnMBpGFwbHOCo25icwOjbnVpAqRhcHN1xAUBIAEBIqNmZWXNA+iiZnbOAwUA1KNnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4DBQS8o3NuZMQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbikdHlwZaRhcHBs"
   },
+  "appDelete": {
+    "id": "ZCIPZD3YOE7RYZ7SZ7VU7CGFJ3U66ARO6SSQFEI7AURPMEHOMDVQ",
+    "signer": {
+      "singleSigner": {
+        "SK": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8DoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuA==",
+        "SignatureVerifier": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg="
+      }
+    },
+    "stxn": {
+      "sig": "ipAMvdGDnpPplBI2nRji+OWI+E/zDa0eRv/kqPE9Tr3/seO6wk1r+TlKIjm4NN/nSoDz5AJre6YwEqKU4NLIDA==",
+      "txn": {
+        "apan": 5,
+        "apid": 84366825,
+        "fee": 1000,
+        "fv": 50659540,
+        "gen": "testnet-v1.0",
+        "gh": "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+        "lv": 50660540,
+        "snd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "type": "appl"
+      }
+    },
+    "stxnBlob": "gqNzaWfEQIqQDL3Rg56T6ZQSNp0Y4vjliPhP8w2tHkb/5KjxPU69/7HjusJNa/k5SiI5uDTf50qA8+QCa3umMBKilODSyAyjdHhuiaRhcGFuBaRhcGlkzgUHVemjZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYXBwbA==",
+    "txnBlob": "iaRhcGFuBaRhcGlkzgUHVemjZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYXBwbA=="
+  },
   "appUpdate": {
     "id": "XUZUBF222WXYOHUDXN6QDOIXCD52HUTFDVI3WQH2V5FEPVHN6OBQ",
     "signer": {
@@ -58,6 +107,144 @@
     },
     "stxnBlob": "gqNzaWfEQOBDBjaZu3zYWH4Oe5D/j3nSBZVbcaK3gW3jrvivYFtUzdiwU3pLT1+a4iOhrQgKozl2PyhbvWlSk8pCh1bnPAmjdHhui6RhcGFuBKRhcGFwxAUBIAEBIqRhcGlkzgUHVemkYXBzdcQFASABASKjZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYXBwbA==",
     "txnBlob": "i6RhcGFuBKRhcGFwxAUBIAEBIqRhcGlkzgUHVemkYXBzdcQFASABASKjZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYXBwbA=="
+  },
+  "assetConfig": {
+    "id": "TYRHZXLZJDWSDAJSJJVBXDQYOPK6FPFEJKRGMEVG5JARZRXEEQZQ",
+    "signer": {
+      "singleSigner": {
+        "SK": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8DoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuA==",
+        "SignatureVerifier": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg="
+      }
+    },
+    "stxn": {
+      "sig": "v+v4+09JWNXuuMG/L/k0SPn9/SbxAbHb2FX0pwpeng9zANtnAlLENf0cx/Tea29M6Lxsrt2tjpLITj/uYJuUAA==",
+      "txn": {
+        "apar": {
+          "c": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+          "f": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+          "m": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+          "r": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ"
+        },
+        "caid": 107686045,
+        "fee": 1000,
+        "fv": 50659540,
+        "gen": "testnet-v1.0",
+        "gh": "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+        "lv": 50660540,
+        "snd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "type": "acfg"
+      }
+    },
+    "stxnBlob": "gqNzaWfEQL/r+PtPSVjV7rjBvy/5NEj5/f0m8QGx29hV9KcKXp4PcwDbZwJSxDX9HMf03mtvTOi8bK7drY6SyE4/7mCblACjdHhuiaRhcGFyhKFjxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKFmxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKFtxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKFyxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKRjYWlkzgZrKJ2jZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYWNmZw==",
+    "txnBlob": "iaRhcGFyhKFjxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKFmxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKFtxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKFyxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKRjYWlkzgZrKJ2jZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYWNmZw=="
+  },
+  "assetCreate": {
+    "id": "UX36HEC35UHWMTOSDJBQWAU6KANXM4OA4GZ2KSL4XWHGSS4PR77A",
+    "signer": {
+      "singleSigner": {
+        "SK": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8DoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuA==",
+        "SignatureVerifier": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg="
+      }
+    },
+    "stxn": {
+      "sig": "Rgm+IAQK7bBLtC63lyF1BFGTGLpnX+KaFLbmRkWgp1ZCDBkE+olKg5LiSOJIkZ6CPUkSyr/SjGAjLDQnBetxBQ==",
+      "txn": {
+        "apar": {
+          "an": "Test Asset",
+          "au": "https://example.com",
+          "c": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+          "f": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+          "m": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+          "r": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+          "t": 10000000000,
+          "un": "TEST"
+        },
+        "fee": 1000,
+        "fv": 50659540,
+        "gen": "testnet-v1.0",
+        "gh": "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+        "lv": 50660540,
+        "snd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "type": "acfg"
+      }
+    },
+    "stxnBlob": "gqNzaWfEQEYJviAECu2wS7Qut5chdQRRkxi6Z1/imhS25kZFoKdWQgwZBPqJSoOS4kjiSJGegj1JEsq/0oxgIyw0JwXrcQWjdHhuiKRhcGFyiKJhbqpUZXN0IEFzc2V0omF1s2h0dHBzOi8vZXhhbXBsZS5jb22hY8QgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbihZsQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbihbcQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbihcsQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbihdM8AAAACVAvkAKJ1bqRURVNUo2ZlZc0D6KJmds4DBQDUo2dlbqx0ZXN0bmV0LXYxLjCiZ2jEIEhjtRiks8hOyBDyLU8QgcsPcfBZp6wg3sYvf3DlCToiomx2zgMFBLyjc25kxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKR0eXBlpGFjZmc=",
+    "txnBlob": "iKRhcGFyiKJhbqpUZXN0IEFzc2V0omF1s2h0dHBzOi8vZXhhbXBsZS5jb22hY8QgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbihZsQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbihbcQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbihcsQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbihdM8AAAACVAvkAKJ1bqRURVNUo2ZlZc0D6KJmds4DBQDUo2dlbqx0ZXN0bmV0LXYxLjCiZ2jEIEhjtRiks8hOyBDyLU8QgcsPcfBZp6wg3sYvf3DlCToiomx2zgMFBLyjc25kxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKR0eXBlpGFjZmc="
+  },
+  "assetDestroy": {
+    "id": "TOZYS4VO5ONAJGXJZ6TF2ZEQU77PRGFTBS2CKKUJZWNEAU2ZN3SQ",
+    "signer": {
+      "singleSigner": {
+        "SK": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8DoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuA==",
+        "SignatureVerifier": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg="
+      }
+    },
+    "stxn": {
+      "sig": "znsLCnKsZN43NC2lglj5mgOIunmA6hQXJjdVe1W1njJD+iW78voTodxNrrWxUxI2x0z3h+qNZ0YQy+SgRytvCw==",
+      "txn": {
+        "caid": 107686045,
+        "fee": 1000,
+        "fv": 50659540,
+        "gen": "testnet-v1.0",
+        "gh": "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+        "lv": 50660540,
+        "snd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "type": "acfg"
+      }
+    },
+    "stxnBlob": "gqNzaWfEQM57CwpyrGTeNzQtpYJY+ZoDiLp5gOoUFyY3VXtVtZ4yQ/olu/L6E6HcTa61sVMSNsdM94fqjWdGEMvkoEcrbwujdHhuiKRjYWlkzgZrKJ2jZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYWNmZw==",
+    "txnBlob": "iKRjYWlkzgZrKJ2jZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYWNmZw=="
+  },
+  "assetFreeze": {
+    "id": "BJ25UFAEU2NNOXKWY6IL62J32JSVSG4UTTVNCGRVTRCDHD5XP43Q",
+    "signer": {
+      "singleSigner": {
+        "SK": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8DoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuA==",
+        "SignatureVerifier": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg="
+      }
+    },
+    "stxn": {
+      "sig": "IenhxiKRo7BizW/J9aH5TNJuBQwH6RwBv2xGuZc5qmSS3SsR6mTS+dzLNB/llyzIY6a1aqm3tJyonVJW9dywCQ==",
+      "txn": {
+        "afrz": true,
+        "fadd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "faid": 107686045,
+        "fee": 1000,
+        "fv": 50659540,
+        "gen": "testnet-v1.0",
+        "gh": "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+        "lv": 50660540,
+        "snd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "type": "afrz"
+      }
+    },
+    "stxnBlob": "gqNzaWfEQCHp4cYikaOwYs1vyfWh+UzSbgUMB+kcAb9sRrmXOapkkt0rEepk0vncyzQf5ZcsyGOmtWqpt7ScqJ1SVvXcsAmjdHhuiqRhZnJ6w6RmYWRkxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKRmYWlkzgZrKJ2jZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYWZyeg==",
+    "txnBlob": "iqRhZnJ6w6RmYWRkxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKRmYWlkzgZrKJ2jZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYWZyeg=="
+  },
+  "assetUnfreeze": {
+    "id": "T6U63PQ4DWYM3ANPZXE76HFIG6MSI2PCXTKF3JX4WOTIUDUVDTKQ",
+    "signer": {
+      "singleSigner": {
+        "SK": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8DoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuA==",
+        "SignatureVerifier": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg="
+      }
+    },
+    "stxn": {
+      "sig": "V0HzSNdxYhgrLrk4xAkvJ3w2J1BqhZRV8YOb6I7wWMB8IAMOG+3V0FbMVelbXgc46gFJgyf69nEgtXDqefaDDA==",
+      "txn": {
+        "fadd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "faid": 107686045,
+        "fee": 1000,
+        "fv": 50659540,
+        "gen": "testnet-v1.0",
+        "gh": "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+        "lv": 50660540,
+        "snd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "type": "afrz"
+      }
+    },
+    "stxnBlob": "gqNzaWfEQFdB80jXcWIYKy65OMQJLyd8NidQaoWUVfGDm+iO8FjAfCADDhvt1dBWzFXpW14HOOoBSYMn+vZxILVw6nn2gwyjdHhuiaRmYWRkxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKRmYWlkzgZrKJ2jZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYWZyeg==",
+    "txnBlob": "iaRmYWRkxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKRmYWlkzgZrKJ2jZmVlzQPoomZ2zgMFANSjZ2VurHRlc3RuZXQtdjEuMKJnaMQgSGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiKibHbOAwUEvKNzbmTEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4pHR5cGWkYWZyeg=="
   },
   "lsigPayment": {
     "id": "7JGVAHKRR2YVG3FZN5MIK7K6OGZ4PN26XHTXGA652LMSR2VQ336Q",
@@ -185,6 +372,82 @@
     "stxnBlob": "gqRtc2lng6ZzdWJzaWeTgqJwa8QgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbihc8RA1rUpfMeVC+TSbEVQJNE639DGJw/bmZY/ru0yGOdM7gZfkTs8LVXzXgcdPDXCuBAaQ1csyOcu1HnX3n25O6G0BIKicGvEIHm1Vi6P5lT5QHixEuipi6eQH4U65pW+1+DjkQutBJZkoXPEQBExOPYUz9XJgSi3swO+am2fQQAn4P+2rm+AfKbu7d+1sB9r6dXGjgZUogpsA9YQ6OsbijHQC0c6PsGo2WmTLgiConBrxCBDzcAj0i1fnhB9GgaTRX010dEOt9IcchGS9W9d5AZl06FzxEBmakHlFJq7zSDrw2jQPuh31yz3ypeg2WfJ/f5iBroy/B5Mxld7dHBdQq41cPcZDd9njLnBz+EFRHWuIpRf000Mo3RocgKhdgGjdHhuh6NmZWXNA+iiZnbOAwUA1KNnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4DBQS8o3NuZMQgGWYv7jL1vSkm0x0yAyWSOa92yxddySYm3ksFL9JTyEukdHlwZaNwYXk=",
     "txnBlob": "h6NmZWXNA+iiZnbOAwUA1KNnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4DBQS8o3NuZMQgGWYv7jL1vSkm0x0yAyWSOa92yxddySYm3ksFL9JTyEukdHlwZaNwYXk="
   },
+  "nonParticipationKeyRegistration": {
+    "id": "P7BBC3NXIJFFXC33AF6JYBOEKJOH6JROJKNN647PBDQKWYFBVMUA",
+    "signer": {
+      "singleSigner": {
+        "SK": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8DoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuA==",
+        "SignatureVerifier": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg="
+      }
+    },
+    "stxn": {
+      "sig": "mL9kN0C/QpYwOBWdJmRmyEVjEORhUQ+HgeI0GRjNCB2mV3bDNAHF6//pbvHnxEnmX7g1kqX70k+UH2EZ55ogBw==",
+      "txn": {
+        "fee": 1000,
+        "fv": 50659540,
+        "gen": "testnet-v1.0",
+        "gh": "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+        "lv": 50660540,
+        "nonpart": true,
+        "snd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "type": "keyreg"
+      }
+    },
+    "stxnBlob": "gqNzaWfEQJi/ZDdAv0KWMDgVnSZkZshFYxDkYVEPh4HiNBkYzQgdpld2wzQBxev/6W7x58RJ5l+4NZKl+9JPlB9hGeeaIAejdHhuiKNmZWXNA+iiZnbOAwUA1KNnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4DBQS8p25vbnBhcnTDo3NuZMQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbikdHlwZaZrZXlyZWc=",
+    "txnBlob": "iKNmZWXNA+iiZnbOAwUA1KNnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4DBQS8p25vbnBhcnTDo3NuZMQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbikdHlwZaZrZXlyZWc="
+  },
+  "offlineKeyRegistration": {
+    "id": "TTDZJSTRXQQWWNAD33WXDHUS5KCYV2GYSN26DC2YBF4XDVX5INWQ",
+    "signer": {
+      "singleSigner": {
+        "SK": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8DoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuA==",
+        "SignatureVerifier": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg="
+      }
+    },
+    "stxn": {
+      "sig": "EvudfqxsSd3IaoJyueEAJM1c0EG0Z2JxPWd0eKdhLDSzEhyL4Bd0ORLy0lN8OxaWb+OiZZgfr2DLjJEv6GYtAw==",
+      "txn": {
+        "fee": 1000,
+        "fv": 50659540,
+        "gen": "testnet-v1.0",
+        "gh": "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+        "lv": 50660540,
+        "snd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "type": "keyreg"
+      }
+    },
+    "stxnBlob": "gqNzaWfEQBL7nX6sbEndyGqCcrnhACTNXNBBtGdicT1ndHinYSw0sxIci+AXdDkS8tJTfDsWlm/jomWYH69gy4yRL+hmLQOjdHhuh6NmZWXNA+iiZnbOAwUA1KNnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4DBQS8o3NuZMQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbikdHlwZaZrZXlyZWc=",
+    "txnBlob": "h6NmZWXNA+iiZnbOAwUA1KNnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4DBQS8o3NuZMQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbikdHlwZaZrZXlyZWc="
+  },
+  "onlineKeyRegistration": {
+    "id": "4HRQJ57RGAQQW7YLPRTPCX65LIHHUZLNTT2M77B6A6EHIVTWTOOQ",
+    "signer": {
+      "singleSigner": {
+        "SK": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8DoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuA==",
+        "SignatureVerifier": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg="
+      }
+    },
+    "stxn": {
+      "sig": "/tW5UpygQ2w0aaBgGkMFnjRbBFC9rVMmN8k2+/SoOoiO8VLzFT72U5Bcbc2aeh6CduD00mpX8EEy1MRKbq4cAQ==",
+      "txn": {
+        "fee": 1000,
+        "fv": 50659540,
+        "gen": "testnet-v1.0",
+        "gh": "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+        "lv": 50660540,
+        "selkey": "ISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0A=",
+        "snd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "sprfkey": "QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ent8fX5/gA==",
+        "type": "keyreg",
+        "votefst": 50659540,
+        "votekd": 1733,
+        "votekey": "AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyA=",
+        "votelst": 53659540
+      }
+    },
+    "stxnBlob": "gqNzaWfEQP7VuVKcoENsNGmgYBpDBZ40WwRQva1TJjfJNvv0qDqIjvFS8xU+9lOQXG3Nmnoegnbg9NJqV/BBMtTESm6uHAGjdHhujaNmZWXNA+iiZnbOAwUA1KNnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4DBQS8pnNlbGtlecQgISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0Cjc25kxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKdzcHJma2V5xEBBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+ApHR5cGWma2V5cmVnp3ZvdGVmc3TOAwUA1KZ2b3Rla2TNBsWndm90ZWtlecQgAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyCndm90ZWxzdM4DMseU",
+    "txnBlob": "jaNmZWXNA+iiZnbOAwUA1KNnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4DBQS8pnNlbGtlecQgISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0Cjc25kxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKdzcHJma2V5xEBBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+ApHR5cGWma2V5cmVnp3ZvdGVmc3TOAwUA1KZ2b3Rla2TNBsWndm90ZWtlecQgAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyCndm90ZWxzdM4DMseU"
+  },
   "optInAssetTransfer": {
     "id": "6LZCCE3I3I4CM5HNK6BU2JO44H7NXG46D6P6X6BFCJMSKD2XPK7Q",
     "signer": {
@@ -209,6 +472,32 @@
     },
     "stxnBlob": "gqNzaWfEQMM2RGxKrKeBYJDV3agVYrFKlE7ypM9lVEtAsh/RFO/ikZpl+SVbUE+uI3QEAgu+dVPc1fAOEZN1KX4YusW5JQejdHhuiaRhcmN2xCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKNmZWXNA+iiZnbOAwUA1KNnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4DBQS8o3NuZMQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbikdHlwZaVheGZlcqR4YWlkzgZrKJ0=",
     "txnBlob": "iaRhcmN2xCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKNmZWXNA+iiZnbOAwUA1KNnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4DBQS8o3NuZMQgA6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbikdHlwZaVheGZlcqR4YWlkzgZrKJ0="
+  },
+  "simpleAssetTransfer": {
+    "id": "JZDMFM27TXJDKM62YBC2RE6YPZXVX7XL3YFSEZEBZZY4ZZX5ONJA",
+    "signer": {
+      "singleSigner": {
+        "SK": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8DoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuA==",
+        "SignatureVerifier": "A6EHv/POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg="
+      }
+    },
+    "stxn": {
+      "sig": "wv61Dulvr5k/BW9L2pPM5/Z1Exu8fo+/YrBq711qgjF7vu1odWjKCckITu5afoHH8zpABEG1ynOE96ZJA+PYCg==",
+      "txn": {
+        "aamt": 1000,
+        "arcv": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "fee": 1000,
+        "fv": 50659540,
+        "gen": "testnet-v1.0",
+        "gh": "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=",
+        "lv": 50660540,
+        "snd": "AOQQPP7TZYIL4HLQ3UMOOS6ATFT6JVRQTOSQ2XY53SDGIESVGG4MPFYUMQ",
+        "type": "axfer",
+        "xaid": 107686045
+      }
+    },
+    "stxnBlob": "gqNzaWfEQML+tQ7pb6+ZPwVvS9qTzOf2dRMbvH6Pv2Kwau9daoIxe77taHVoygnJCE7uWn6Bx/M6QARBtcpzhPemSQPj2AqjdHhuiqRhYW10zQPopGFyY3bEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4o2ZlZc0D6KJmds4DBQDUo2dlbqx0ZXN0bmV0LXYxLjCiZ2jEIEhjtRiks8hOyBDyLU8QgcsPcfBZp6wg3sYvf3DlCToiomx2zgMFBLyjc25kxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKR0eXBlpWF4ZmVypHhhaWTOBmsonQ==",
+    "txnBlob": "iqRhYW10zQPopGFyY3bEIAOhB7/zzhC+HXDdGOdLwJln5NYwm6UNXx3chmQSVTG4o2ZlZc0D6KJmds4DBQDUo2dlbqx0ZXN0bmV0LXYxLjCiZ2jEIEhjtRiks8hOyBDyLU8QgcsPcfBZp6wg3sYvf3DlCToiomx2zgMFBLyjc25kxCADoQe/884Qvh1w3RjnS8CZZ+TWMJulDV8d3IZkElUxuKR0eXBlpWF4ZmVypHhhaWTOBmsonQ=="
   },
   "simplePayment": {
     "id": "NGSZLL2CYYMF4SED23XUSCVW6PBTCNGS73W5NMYB3GYG2NGEQBVA",

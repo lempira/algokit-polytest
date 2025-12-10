@@ -120,6 +120,18 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 		stxn.Txn = transactions.Transaction{
 			ApplicationCallTxnFields: fields.(transactions.ApplicationCallTxnFields),
 		}
+	case protocol.AssetConfigTx:
+		stxn.Txn = transactions.Transaction{
+			AssetConfigTxnFields: fields.(transactions.AssetConfigTxnFields),
+		}
+	case protocol.AssetFreezeTx:
+		stxn.Txn = transactions.Transaction{
+			AssetFreezeTxnFields: fields.(transactions.AssetFreezeTxnFields),
+		}
+	case protocol.KeyRegistrationTx:
+		stxn.Txn = transactions.Transaction{
+			KeyregTxnFields: fields.(transactions.KeyregTxnFields),
+		}
 	default:
 		panic("Unsupported transaction type")
 	}
@@ -203,14 +215,25 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 }
 
 type TestData struct {
-	SimplePayment          TxData `codec:"simplePayment"`
-	OptInAssetTransfer     TxData `codec:"optInAssetTransfer"`
-	AppCreate              TxData `codec:"appCreate"`
-	AppUpdate              TxData `codec:"appUpdate"`
-	MsigPayment            TxData `codec:"msigPayment"`
-	LsigPayment            TxData `codec:"lsigPayment"`
-	SingleDelegatedPayment TxData `codec:"singleDelegatedPayment"`
-	MsigDelegatedPayment   TxData `codec:"msigDelegatedPayment"`
+	SimplePayment                   TxData `codec:"simplePayment"`
+	SimpleAssetTransfer             TxData `codec:"simpleAssetTransfer"`
+	OptInAssetTransfer              TxData `codec:"optInAssetTransfer"`
+	AppCreate                       TxData `codec:"appCreate"`
+	AppUpdate                       TxData `codec:"appUpdate"`
+	AppDelete                       TxData `codec:"appDelete"`
+	AppCall                         TxData `codec:"appCall"`
+	AssetCreate                     TxData `codec:"assetCreate"`
+	AssetDestroy                    TxData `codec:"assetDestroy"`
+	AssetConfig                     TxData `codec:"assetConfig"`
+	OnlineKeyRegistration           TxData `codec:"onlineKeyRegistration"`
+	OfflineKeyRegistration          TxData `codec:"offlineKeyRegistration"`
+	NonParticipationKeyRegistration TxData `codec:"nonParticipationKeyRegistration"`
+	AssetFreeze                     TxData `codec:"assetFreeze"`
+	AssetUnfreeze                   TxData `codec:"assetUnfreeze"`
+	MsigPayment                     TxData `codec:"msigPayment"`
+	LsigPayment                     TxData `codec:"lsigPayment"`
+	SingleDelegatedPayment          TxData `codec:"singleDelegatedPayment"`
+	MsigDelegatedPayment            TxData `codec:"msigDelegatedPayment"`
 }
 
 func addr(signer Signer) basics.Address {
@@ -275,6 +298,141 @@ func makeAppUpdate(signer Signer, program []byte) TxData {
 	return makeTxData(protocol.ApplicationCallTx, appUpdateFields, signer)
 }
 
+func makeAppDelete(signer Signer) TxData {
+	appDeleteFields := transactions.ApplicationCallTxnFields{
+		ApplicationID: appId,
+		OnCompletion:  transactions.DeleteApplicationOC,
+	}
+
+	return makeTxData(protocol.ApplicationCallTx, appDeleteFields, signer)
+}
+
+func makeAppCall(signer Signer) TxData {
+	appCallFields := transactions.ApplicationCallTxnFields{
+		ApplicationID: appId,
+		OnCompletion:  transactions.NoOpOC,
+	}
+
+	return makeTxData(protocol.ApplicationCallTx, appCallFields, signer)
+}
+
+func makeSimpleAssetTransfer(signer Signer) TxData {
+	transferFields := transactions.AssetTransferTxnFields{
+		XferAsset:     assetId,
+		AssetAmount:   1000,
+		AssetReceiver: addr(signer),
+	}
+
+	return makeTxData(protocol.AssetTransferTx, transferFields, signer)
+}
+
+func makeAssetCreate(signer Signer) TxData {
+	assetCreateFields := transactions.AssetConfigTxnFields{
+		ConfigAsset: 0, // 0 for asset creation
+		AssetParams: basics.AssetParams{
+			Total:         10000000000,
+			Decimals:      0,
+			DefaultFrozen: false,
+			UnitName:      "TEST",
+			AssetName:     "Test Asset",
+			URL:           "https://example.com",
+			Manager:       addr(signer),
+			Reserve:       addr(signer),
+			Freeze:        addr(signer),
+			Clawback:      addr(signer),
+		},
+	}
+
+	return makeTxData(protocol.AssetConfigTx, assetCreateFields, signer)
+}
+
+func makeAssetDestroy(signer Signer) TxData {
+	assetDestroyFields := transactions.AssetConfigTxnFields{
+		ConfigAsset: assetId,
+		// Empty AssetParams signals asset destruction
+	}
+
+	return makeTxData(protocol.AssetConfigTx, assetDestroyFields, signer)
+}
+
+func makeAssetConfig(signer Signer) TxData {
+	assetConfigFields := transactions.AssetConfigTxnFields{
+		ConfigAsset: assetId,
+		AssetParams: basics.AssetParams{
+			Manager:  addr(signer),
+			Reserve:  addr(signer),
+			Freeze:   addr(signer),
+			Clawback: addr(signer),
+		},
+	}
+
+	return makeTxData(protocol.AssetConfigTx, assetConfigFields, signer)
+}
+
+func makeOnlineKeyRegistration(signer Signer) TxData {
+	var voteKey [32]byte
+	var selectionKey [32]byte
+	var stateProofKey [64]byte
+
+	// Fill with deterministic test values
+	for i := range 32 {
+		voteKey[i] = byte(i + 1)
+		selectionKey[i] = byte(i + 33)
+	}
+	for i := range 64 {
+		stateProofKey[i] = byte(i + 65)
+	}
+
+	keyregFields := transactions.KeyregTxnFields{
+		VotePK:           crypto.OneTimeSignatureVerifier(voteKey),
+		SelectionPK:      crypto.VRFVerifier(selectionKey),
+		StateProofPK:     stateProofKey,
+		VoteFirst:        basics.Round(50659540),
+		VoteLast:         basics.Round(53659540),
+		VoteKeyDilution:  1733,
+		Nonparticipation: false,
+	}
+
+	return makeTxData(protocol.KeyRegistrationTx, keyregFields, signer)
+}
+
+func makeOfflineKeyRegistration(signer Signer) TxData {
+	keyregFields := transactions.KeyregTxnFields{
+		// Empty fields for offline key registration
+		Nonparticipation: false,
+	}
+
+	return makeTxData(protocol.KeyRegistrationTx, keyregFields, signer)
+}
+
+func makeNonParticipationKeyRegistration(signer Signer) TxData {
+	keyregFields := transactions.KeyregTxnFields{
+		Nonparticipation: true,
+	}
+
+	return makeTxData(protocol.KeyRegistrationTx, keyregFields, signer)
+}
+
+func makeAssetFreeze(signer Signer) TxData {
+	freezeFields := transactions.AssetFreezeTxnFields{
+		FreezeAccount: addr(signer),
+		FreezeAsset:   assetId,
+		AssetFrozen:   true,
+	}
+
+	return makeTxData(protocol.AssetFreezeTx, freezeFields, signer)
+}
+
+func makeAssetUnfreeze(signer Signer) TxData {
+	unfreezeFields := transactions.AssetFreezeTxnFields{
+		FreezeAccount: addr(signer),
+		FreezeAsset:   assetId,
+		AssetFrozen:   false,
+	}
+
+	return makeTxData(protocol.AssetFreezeTx, unfreezeFields, signer)
+}
+
 func main() {
 	secrets := generateSecrets(3)
 	simpleSigner := Signer{
@@ -305,14 +463,25 @@ func main() {
 	}
 
 	testData := TestData{
-		SimplePayment:          makeSimplePayment(simpleSigner),
-		OptInAssetTransfer:     makeOptInAssetTransfer(simpleSigner),
-		AppCreate:              makeAppCreate(simpleSigner, op.Program),
-		AppUpdate:              makeAppUpdate(simpleSigner, op.Program),
-		MsigPayment:            makeSimplePayment(msigSigner),
-		LsigPayment:            makeSimplePayment(lsigSigner),
-		SingleDelegatedPayment: makeSimplePayment(delegatedSigner),
-		MsigDelegatedPayment:   makeSimplePayment(msigDelegatedSigner),
+		SimplePayment:                   makeSimplePayment(simpleSigner),
+		SimpleAssetTransfer:             makeSimpleAssetTransfer(simpleSigner),
+		OptInAssetTransfer:              makeOptInAssetTransfer(simpleSigner),
+		AppCreate:                       makeAppCreate(simpleSigner, op.Program),
+		AppUpdate:                       makeAppUpdate(simpleSigner, op.Program),
+		AppDelete:                       makeAppDelete(simpleSigner),
+		AppCall:                         makeAppCall(simpleSigner),
+		AssetCreate:                     makeAssetCreate(simpleSigner),
+		AssetDestroy:                    makeAssetDestroy(simpleSigner),
+		AssetConfig:                     makeAssetConfig(simpleSigner),
+		OnlineKeyRegistration:           makeOnlineKeyRegistration(simpleSigner),
+		OfflineKeyRegistration:          makeOfflineKeyRegistration(simpleSigner),
+		NonParticipationKeyRegistration: makeNonParticipationKeyRegistration(simpleSigner),
+		AssetFreeze:                     makeAssetFreeze(simpleSigner),
+		AssetUnfreeze:                   makeAssetUnfreeze(simpleSigner),
+		MsigPayment:                     makeSimplePayment(msigSigner),
+		LsigPayment:                     makeSimplePayment(lsigSigner),
+		SingleDelegatedPayment:          makeSimplePayment(delegatedSigner),
+		MsigDelegatedPayment:            makeSimplePayment(msigDelegatedSigner),
 	}
 
 	testDataJson := protocol.EncodeJSON(&testData)
