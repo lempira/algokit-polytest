@@ -8,6 +8,7 @@ import (
 	"github.com/algorand/go-algorand/crypto"
 	"github.com/algorand/go-algorand/data/basics"
 	"github.com/algorand/go-algorand/data/bookkeeping"
+	"github.com/algorand/go-algorand/data/committee"
 	"github.com/algorand/go-algorand/data/transactions"
 	"github.com/algorand/go-algorand/data/transactions/logic"
 	"github.com/algorand/go-algorand/data/transactions/verify"
@@ -132,6 +133,10 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 		stxn.Txn = transactions.Transaction{
 			KeyregTxnFields: fields.(transactions.KeyregTxnFields),
 		}
+	case protocol.HeartbeatTx:
+		stxn.Txn = transactions.Transaction{
+			HeartbeatTxnFields: fields.(*transactions.HeartbeatTxnFields),
+		}
 	default:
 		panic("Unsupported transaction type")
 	}
@@ -234,6 +239,7 @@ type TestData struct {
 	LsigPayment                     TxData `codec:"lsigPayment"`
 	SingleDelegatedPayment          TxData `codec:"singleDelegatedPayment"`
 	MsigDelegatedPayment            TxData `codec:"msigDelegatedPayment"`
+	Heartbeat                       TxData `codec:"heartbeat"`
 }
 
 func addr(signer Signer) basics.Address {
@@ -433,6 +439,32 @@ func makeAssetUnfreeze(signer Signer) TxData {
 	return makeTxData(protocol.AssetFreezeTx, unfreezeFields, signer)
 }
 
+func makeHeartbeat(signer Signer) TxData {
+	const keyDilution = uint64(111)
+	// Use the same FirstValid/LastValid as makeTxData
+	fv := basics.Round(50659540)
+	lv := basics.Round(50660540)
+
+	firstID := basics.OneTimeIDForRound(fv, keyDilution)
+	lastID := basics.OneTimeIDForRound(lv, keyDilution)
+	numBatches := lastID.Batch - firstID.Batch + 1
+	id := basics.OneTimeIDForRound(lv, keyDilution)
+
+	seed := committee.Seed{0x01, 0x02, 0x03}
+	prng := crypto.MakePRNG([]byte("heartbeat-test-seed"))
+	otss := crypto.GenerateOneTimeSignatureSecretsRNG(firstID.Batch, numBatches, prng)
+
+	heartbeatFields := &transactions.HeartbeatTxnFields{
+		HbAddress:     addr(signer),
+		HbProof:       otss.Sign(id, seed).ToHeartbeatProof(),
+		HbSeed:        seed,
+		HbVoteID:      otss.OneTimeSignatureVerifier,
+		HbKeyDilution: keyDilution,
+	}
+
+	return makeTxData(protocol.HeartbeatTx, heartbeatFields, signer)
+}
+
 func main() {
 	secrets := generateSecrets(3)
 	simpleSigner := Signer{
@@ -478,6 +510,7 @@ func main() {
 		NonParticipationKeyRegistration: makeNonParticipationKeyRegistration(simpleSigner),
 		AssetFreeze:                     makeAssetFreeze(simpleSigner),
 		AssetUnfreeze:                   makeAssetUnfreeze(simpleSigner),
+		Heartbeat:                       makeHeartbeat(simpleSigner),
 		MsigPayment:                     makeSimplePayment(msigSigner),
 		LsigPayment:                     makeSimplePayment(lsigSigner),
 		SingleDelegatedPayment:          makeSimplePayment(delegatedSigner),
