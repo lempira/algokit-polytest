@@ -58,9 +58,6 @@
         "encode with signature": {
           "desc": "A signature can be attached to a encoded transaction"
         },
-        "encode with auth address": {
-          "desc": "An auth address can be attached to a encoded transaction with a signature"
-        },
         "decode with prefix": {
           "desc": "A transaction with TX prefix and valid fields is decoded properly"
         },
@@ -75,9 +72,6 @@
         },
         "example": {
           "desc": "A human-readable example of forming a transaction and signing it"
-        },
-        "multisig example": {
-          "desc": "A human-readable example of forming a transaction and signing it with a multisignature sig"
         },
         "assign fee": {
           "desc": "A fee can be calculated and assigned to a transaction"
