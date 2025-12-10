@@ -240,6 +240,7 @@ type TestData struct {
 	SingleDelegatedPayment          TxData `codec:"singleDelegatedPayment"`
 	MsigDelegatedPayment            TxData `codec:"msigDelegatedPayment"`
 	Heartbeat                       TxData `codec:"heartbeat"`
+	StateProof                      TxData `codec:"stateProof"`
 }
 
 func addr(signer Signer) basics.Address {
@@ -465,6 +466,30 @@ func makeHeartbeat(signer Signer) TxData {
 	return makeTxData(protocol.HeartbeatTx, heartbeatFields, signer)
 }
 
+func makeStateProof() TxData {
+	// Rather than constructing a stateproof txn from scratch, read it from a mainnet stateproof txn encoded in JSON.
+	// If we ever need to update this, look for the latest transaction from the below URL:
+	// https://lora.algokit.io/mainnet/account/XM6FEYVJ2XDU2IBH4OT6VZGW75YM63CM4TC6AV6BD3JZXFJUIICYTVB5EU
+	// Then hit /v2/transactions/pending/{txid} on a mainnet algod node
+	data, err := os.ReadFile("stateproof.json")
+	if err != nil {
+		panic(err)
+	}
+
+	tx := transactions.SignedTxn{}
+	err = protocol.DecodeJSON([]byte(data), &tx)
+	if err != nil {
+		panic(err)
+	}
+
+	return TxData{
+		Stxn:     tx,
+		StxnBlob: protocol.Encode(&tx),
+		TxnBlob:  protocol.Encode(&tx.Txn),
+		Id:       tx.Txn.ID().String(),
+	}
+}
+
 func main() {
 	secrets := generateSecrets(3)
 	simpleSigner := Signer{
@@ -515,6 +540,7 @@ func main() {
 		LsigPayment:                     makeSimplePayment(lsigSigner),
 		SingleDelegatedPayment:          makeSimplePayment(delegatedSigner),
 		MsigDelegatedPayment:            makeSimplePayment(msigDelegatedSigner),
+		StateProof:                      makeStateProof(),
 	}
 
 	testDataJson := protocol.EncodeJSON(&testData)
