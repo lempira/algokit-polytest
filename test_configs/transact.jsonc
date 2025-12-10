@@ -1,7 +1,8 @@
 {
   "name": "algokit_transact Test Plan",
   "package_name": "algokit_transact",
-  "version": "0.6.0",
+  "resource_dir": "../resources/",
+  "version": "0.7.0",
   "suite": {
     "Payment": {
       "desc": "Tests for payment transactions",
@@ -100,10 +101,12 @@
   },
   "target": {
     "pytest": {
-      "out_dir": "../../tests/modules/transact"
+      "out_dir": "../../tests/modules/transact",
+      "resource_dir": "../../tests/modules/transaction/polytest_resources"
     },
     "vitest": {
-      "out_dir": "../../tests"
+      "out_dir": "../../tests",
+      "resource_dir": "../../tests/polytest_resources"
     }
   },
 
