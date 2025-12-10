@@ -1,0 +1,38 @@
+{
+  "name": "algokit-polytest-poller",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "description": "Algorand blockchain poller for algokit-polytest",
+  "main": "src/algorand-poller.ts",
+  "scripts": {
+    "postinstall": "node scripts/build-algokit-utils.mjs",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest watch --coverage --passWithNoTests",
+    "test:coverage": "vitest run --coverage --passWithNoTests",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check-types": "tsc --noEmit",
+    "format": "prettier --write .",
+    "clean": "rimraf dist coverage"
+  },
+  "dependencies": {
+    "@algorandfoundation/algokit-utils": "github:mrcointreau/algokit-utils-ts#feat/export-packages-for-polytest-poller",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@makerx/prettier-config": "^2.0.0",
+    "@tsconfig/node20": "^20.1.4",
+    "@types/node": "^20.0.0",
+    "@vitest/coverage-v8": "^4.0.5",
+    "eslint": "^9.15.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^8.16.0",
+    "vitest": "^4.0.5"
+  }
+}
