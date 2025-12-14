@@ -90,8 +90,10 @@ type TxData struct {
 }
 
 type TxGroupData struct {
-	Txns    []string `codec:"txns"`
-	GroupID string   `codec:"groupID"`
+	Txns      []string `codec:"txns"`
+	TxnBlobs  [][]byte `codec:"txnBlobs"`
+	StxnBlobs [][]byte `codec:"stxnBlobs"`
+	GroupID   string   `codec:"groupID"`
 }
 
 type Signer struct {
@@ -516,9 +518,18 @@ func makeTxGroup(signer Signer) TxGroupData {
 		panic(err)
 	}
 
+	stxnBlobs := make([][]byte, len(stxns))
+	txnBlobs := make([][]byte, len(stxns))
+	for i := range stxns {
+		stxnBlobs[i] = protocol.Encode(&stxns[i])
+		txnBlobs[i] = protocol.Encode(&stxns[i].Txn)
+	}
+
 	return TxGroupData{
-		Txns:    []string{"simplePayment", "simplePayment", "appCall"},
-		GroupID: groupID.String(),
+		Txns:      []string{"simplePayment", "simplePayment", "appCall"},
+		TxnBlobs:  txnBlobs,
+		StxnBlobs: stxnBlobs,
+		GroupID:   groupID.String(),
 	}
 
 }
