@@ -89,6 +89,11 @@ type TxData struct {
 	Id       string                 `codec:"id"`
 }
 
+type TxGroupData struct {
+	Txns    []string `codec:"txns"`
+	GroupID string   `codec:"groupID"`
+}
+
 type Signer struct {
 	SingleSigner *crypto.SignatureSecrets  `codec:"singleSigner,omitempty"`
 	MsigSigners  []crypto.SignatureSecrets `codec:"msigSigners,omitempty"`
@@ -220,27 +225,28 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 }
 
 type TestData struct {
-	SimplePayment                   TxData `codec:"simplePayment"`
-	SimpleAssetTransfer             TxData `codec:"simpleAssetTransfer"`
-	OptInAssetTransfer              TxData `codec:"optInAssetTransfer"`
-	AppCreate                       TxData `codec:"appCreate"`
-	AppUpdate                       TxData `codec:"appUpdate"`
-	AppDelete                       TxData `codec:"appDelete"`
-	AppCall                         TxData `codec:"appCall"`
-	AssetCreate                     TxData `codec:"assetCreate"`
-	AssetDestroy                    TxData `codec:"assetDestroy"`
-	AssetConfig                     TxData `codec:"assetConfig"`
-	OnlineKeyRegistration           TxData `codec:"onlineKeyRegistration"`
-	OfflineKeyRegistration          TxData `codec:"offlineKeyRegistration"`
-	NonParticipationKeyRegistration TxData `codec:"nonParticipationKeyRegistration"`
-	AssetFreeze                     TxData `codec:"assetFreeze"`
-	AssetUnfreeze                   TxData `codec:"assetUnfreeze"`
-	MsigPayment                     TxData `codec:"msigPayment"`
-	LsigPayment                     TxData `codec:"lsigPayment"`
-	SingleDelegatedPayment          TxData `codec:"singleDelegatedPayment"`
-	MsigDelegatedPayment            TxData `codec:"msigDelegatedPayment"`
-	Heartbeat                       TxData `codec:"heartbeat"`
-	StateProof                      TxData `codec:"stateProof"`
+	SimplePayment                   TxData      `codec:"simplePayment"`
+	SimpleAssetTransfer             TxData      `codec:"simpleAssetTransfer"`
+	OptInAssetTransfer              TxData      `codec:"optInAssetTransfer"`
+	AppCreate                       TxData      `codec:"appCreate"`
+	AppUpdate                       TxData      `codec:"appUpdate"`
+	AppDelete                       TxData      `codec:"appDelete"`
+	AppCall                         TxData      `codec:"appCall"`
+	AssetCreate                     TxData      `codec:"assetCreate"`
+	AssetDestroy                    TxData      `codec:"assetDestroy"`
+	AssetConfig                     TxData      `codec:"assetConfig"`
+	OnlineKeyRegistration           TxData      `codec:"onlineKeyRegistration"`
+	OfflineKeyRegistration          TxData      `codec:"offlineKeyRegistration"`
+	NonParticipationKeyRegistration TxData      `codec:"nonParticipationKeyRegistration"`
+	AssetFreeze                     TxData      `codec:"assetFreeze"`
+	AssetUnfreeze                   TxData      `codec:"assetUnfreeze"`
+	MsigPayment                     TxData      `codec:"msigPayment"`
+	LsigPayment                     TxData      `codec:"lsigPayment"`
+	SingleDelegatedPayment          TxData      `codec:"singleDelegatedPayment"`
+	MsigDelegatedPayment            TxData      `codec:"msigDelegatedPayment"`
+	Heartbeat                       TxData      `codec:"heartbeat"`
+	StateProof                      TxData      `codec:"stateProof"`
+	TxnGroup                        TxGroupData `codec:"txGroup"`
 }
 
 func addr(signer Signer) basics.Address {
@@ -466,6 +472,57 @@ func makeHeartbeat(signer Signer) TxData {
 	return makeTxData(protocol.HeartbeatTx, heartbeatFields, signer)
 }
 
+func computeGroupID(txgroup []transactions.Transaction) (crypto.Digest, error) {
+	var group transactions.TxGroup
+	for _, tx := range txgroup {
+		if !tx.Group.IsZero() {
+			return crypto.Digest{}, fmt.Errorf("tx %v already has a group", tx)
+		}
+		group.TxGroupHashes = append(group.TxGroupHashes, crypto.Digest(tx.ID()))
+	}
+	return crypto.HashObj(group), nil
+}
+
+func makeTxGroup(signer Signer) TxGroupData {
+	pay1 := makeSimplePayment(signer)
+	pay2 := makeSimplePayment(signer)
+	appCall := makeAppCall(signer)
+
+	txGroup := []transactions.Transaction{pay1.Stxn.Txn, pay2.Stxn.Txn, appCall.Stxn.Txn}
+
+	groupID, err := computeGroupID(txGroup)
+	if err != nil {
+		panic(err)
+	}
+
+	for i := range txGroup {
+		txGroup[i].Group = groupID
+	}
+
+	stxns := make([]transactions.SignedTxn, len(txGroup))
+	for i := range txGroup {
+		stxns[i] =
+			transactions.SignedTxn{
+				Txn: txGroup[i],
+				Sig: signer.SingleSigner.Sign(txGroup[i]),
+			}
+	}
+
+	blkHdr := createDummyBlockHeader()
+	ledger := DummyLedgerForSignature{}
+
+	_, err = verify.TxnGroup(stxns, &blkHdr, nil, &ledger)
+	if err != nil {
+		panic(err)
+	}
+
+	return TxGroupData{
+		Txns:    []string{"simplePayment", "simplePayment", "appCall"},
+		GroupID: groupID.String(),
+	}
+
+}
+
 func makeStateProof() TxData {
 	// Rather than constructing a stateproof txn from scratch, read it from a mainnet stateproof txn encoded in JSON.
 	// Use get_stateproof.sh to get the latest mainnet stateproof txn from nodely.
@@ -539,6 +596,7 @@ func main() {
 		SingleDelegatedPayment:          makeSimplePayment(delegatedSigner),
 		MsigDelegatedPayment:            makeSimplePayment(msigDelegatedSigner),
 		StateProof:                      makeStateProof(),
+		TxnGroup:                        makeTxGroup(simpleSigner),
 	}
 
 	testDataJson := protocol.EncodeJSON(&testData)
