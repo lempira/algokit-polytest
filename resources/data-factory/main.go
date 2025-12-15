@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/algorand/go-algorand/crypto"
 	"github.com/algorand/go-algorand/data/basics"
@@ -224,31 +225,6 @@ func makeTxData(txType protocol.TxType, fields any, signer Signer) TxData {
 		TxnBlob:  protocol.Encode(&stxn.Txn),
 		Id:       stxn.Txn.ID().String(),
 	}
-}
-
-type TestData struct {
-	SimplePayment                   TxData      `codec:"simplePayment"`
-	SimpleAssetTransfer             TxData      `codec:"simpleAssetTransfer"`
-	OptInAssetTransfer              TxData      `codec:"optInAssetTransfer"`
-	AppCreate                       TxData      `codec:"appCreate"`
-	AppUpdate                       TxData      `codec:"appUpdate"`
-	AppDelete                       TxData      `codec:"appDelete"`
-	AppCall                         TxData      `codec:"appCall"`
-	AssetCreate                     TxData      `codec:"assetCreate"`
-	AssetDestroy                    TxData      `codec:"assetDestroy"`
-	AssetConfig                     TxData      `codec:"assetConfig"`
-	OnlineKeyRegistration           TxData      `codec:"onlineKeyRegistration"`
-	OfflineKeyRegistration          TxData      `codec:"offlineKeyRegistration"`
-	NonParticipationKeyRegistration TxData      `codec:"nonParticipationKeyRegistration"`
-	AssetFreeze                     TxData      `codec:"assetFreeze"`
-	AssetUnfreeze                   TxData      `codec:"assetUnfreeze"`
-	MsigPayment                     TxData      `codec:"msigPayment"`
-	LsigPayment                     TxData      `codec:"lsigPayment"`
-	SingleDelegatedPayment          TxData      `codec:"singleDelegatedPayment"`
-	MsigDelegatedPayment            TxData      `codec:"msigDelegatedPayment"`
-	Heartbeat                       TxData      `codec:"heartbeat"`
-	StateProof                      TxData      `codec:"stateProof"`
-	TxnGroup                        TxGroupData `codec:"txGroup"`
 }
 
 func addr(signer Signer) basics.Address {
@@ -556,6 +532,19 @@ func makeStateProof() TxData {
 	}
 }
 
+// writeTestDataFile writes a single test data item to a JSON file
+func writeTestDataFile(name string, data any) {
+	filename := filepath.Join("data", name+".json")
+
+	jsonData := protocol.EncodeJSON(data)
+
+	err := os.WriteFile(filename, jsonData, 0644)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Test data written to file:", filename)
+}
+
 func main() {
 	secrets := generateSecrets(3)
 	simpleSigner := Signer{
@@ -585,38 +574,27 @@ func main() {
 		Lsig:        op.Program,
 	}
 
-	testData := TestData{
-		SimplePayment:                   makeSimplePayment(simpleSigner),
-		SimpleAssetTransfer:             makeSimpleAssetTransfer(simpleSigner),
-		OptInAssetTransfer:              makeOptInAssetTransfer(simpleSigner),
-		AppCreate:                       makeAppCreate(simpleSigner, op.Program),
-		AppUpdate:                       makeAppUpdate(simpleSigner, op.Program),
-		AppDelete:                       makeAppDelete(simpleSigner),
-		AppCall:                         makeAppCall(simpleSigner),
-		AssetCreate:                     makeAssetCreate(simpleSigner),
-		AssetDestroy:                    makeAssetDestroy(simpleSigner),
-		AssetConfig:                     makeAssetConfig(simpleSigner),
-		OnlineKeyRegistration:           makeOnlineKeyRegistration(simpleSigner),
-		OfflineKeyRegistration:          makeOfflineKeyRegistration(simpleSigner),
-		NonParticipationKeyRegistration: makeNonParticipationKeyRegistration(simpleSigner),
-		AssetFreeze:                     makeAssetFreeze(simpleSigner),
-		AssetUnfreeze:                   makeAssetUnfreeze(simpleSigner),
-		Heartbeat:                       makeHeartbeat(simpleSigner),
-		MsigPayment:                     makeSimplePayment(msigSigner),
-		LsigPayment:                     makeSimplePayment(lsigSigner),
-		SingleDelegatedPayment:          makeSimplePayment(delegatedSigner),
-		MsigDelegatedPayment:            makeSimplePayment(msigDelegatedSigner),
-		StateProof:                      makeStateProof(),
-		TxnGroup:                        makeTxGroup(simpleSigner),
-	}
-
-	testDataJson := protocol.EncodeJSON(&testData)
-	testDataFile := "transact_test_data.json"
-
-	err = os.WriteFile(testDataFile, testDataJson, 0644)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Test data written to file:", testDataFile)
+	writeTestDataFile("simplePayment", makeSimplePayment(simpleSigner))
+	writeTestDataFile("simpleAssetTransfer", makeSimpleAssetTransfer(simpleSigner))
+	writeTestDataFile("optInAssetTransfer", makeOptInAssetTransfer(simpleSigner))
+	writeTestDataFile("appCreate", makeAppCreate(simpleSigner, op.Program))
+	writeTestDataFile("appUpdate", makeAppUpdate(simpleSigner, op.Program))
+	writeTestDataFile("appDelete", makeAppDelete(simpleSigner))
+	writeTestDataFile("appCall", makeAppCall(simpleSigner))
+	writeTestDataFile("assetCreate", makeAssetCreate(simpleSigner))
+	writeTestDataFile("assetDestroy", makeAssetDestroy(simpleSigner))
+	writeTestDataFile("assetConfig", makeAssetConfig(simpleSigner))
+	writeTestDataFile("onlineKeyRegistration", makeOnlineKeyRegistration(simpleSigner))
+	writeTestDataFile("offlineKeyRegistration", makeOfflineKeyRegistration(simpleSigner))
+	writeTestDataFile("nonParticipationKeyRegistration", makeNonParticipationKeyRegistration(simpleSigner))
+	writeTestDataFile("assetFreeze", makeAssetFreeze(simpleSigner))
+	writeTestDataFile("assetUnfreeze", makeAssetUnfreeze(simpleSigner))
+	writeTestDataFile("heartbeat", makeHeartbeat(simpleSigner))
+	writeTestDataFile("msigPayment", makeSimplePayment(msigSigner))
+	writeTestDataFile("lsigPayment", makeSimplePayment(lsigSigner))
+	writeTestDataFile("singleDelegatedPayment", makeSimplePayment(delegatedSigner))
+	writeTestDataFile("msigDelegatedPayment", makeSimplePayment(msigDelegatedSigner))
+	writeTestDataFile("stateProof", makeStateProof())
+	writeTestDataFile("txGroup", makeTxGroup(simpleSigner))
 
 }
