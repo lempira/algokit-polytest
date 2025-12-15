@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 
 	"github.com/algorand/go-algorand/crypto"
 	"github.com/algorand/go-algorand/data/basics"
@@ -532,11 +533,20 @@ func makeStateProof() TxData {
 	}
 }
 
+// fixNumericKeys fixes unquoted numeric keys in JSON output from protocol.EncodeJSON
+// The codec library outputs map keys with integer types without quotes, which is invalid JSON
+func fixNumericKeys(jsonData []byte) []byte {
+	// Match unquoted numeric keys like `  0: {` or `  123: {`
+	re := regexp.MustCompile(`(\s)(\d+)(\s*):`)
+	return re.ReplaceAll(jsonData, []byte(`$1"$2"$3:`))
+}
+
 // writeTestDataFile writes a single test data item to a JSON file
 func writeTestDataFile(name string, data any) {
 	filename := filepath.Join("data", name+".json")
 
 	jsonData := protocol.EncodeJSON(data)
+	jsonData = fixNumericKeys(jsonData)
 
 	err := os.WriteFile(filename, jsonData, 0644)
 	if err != nil {
