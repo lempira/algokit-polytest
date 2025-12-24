@@ -96,7 +96,7 @@
   "target": {
     "pytest": {
       "out_dir": "../../tests/modules/transact",
-      "resource_dir": "../../tests/modules/transaction/polytest_resources"
+      "resource_dir": "../../tests/modules/transact/polytest_resources"
     },
     "vitest": {
       "out_dir": "../../tests",
