@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Debug Replay Server",
       "program": "${workspaceFolder}/bin/server.ts",
-      "args": ["indexer"], // Change to: algod, indexer, or kmd
+      "args": ["algod"], // Change to: algod, indexer, or kmd
       // "args": ["algod", "${workspaceFolder}/tmp-recordings"], // Change to: algod, indexer, or kmd
       "cwd": "${workspaceFolder}",
       "stopOnEntry": false,

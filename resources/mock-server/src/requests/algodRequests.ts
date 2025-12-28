@@ -161,7 +161,8 @@ export async function algosdkAlgodRequests() {
 }
 
 export async function algosdkAlgodRequestsWithMainnet() {
-  // TestNet configuration (using AlgoNode public API)
+  // MainNet configuration - StateProofs are only available on MainNet
+  // URL will be normalized to TestNet for ID generation and HAR storage
   const algod = new Algodv2(
     "a".repeat(64),
     "https://mainnet-api.4160.nodely.dev",

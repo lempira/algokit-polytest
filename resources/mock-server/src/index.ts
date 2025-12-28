@@ -8,6 +8,16 @@ Polly.register(FetchAdapter);
 
 export type Client = "algod" | "kmd" | "indexer";
 
+// Normalize URLs for ID calculation - treat MainNet and localhost as TestNet
+const normalizeUrl = (url: string) => {
+  return url
+    .replace(
+      "https://mainnet-api.4160.nodely.dev",
+      "https://testnet-api.4160.nodely.dev"
+    )
+    .replace("http://localhost:4001", "https://testnet-api.4160.nodely.dev");
+};
+
 export function getPolly(
   client: Client,
   config: {
@@ -26,7 +36,7 @@ export function getPolly(
     },
     matchRequestsBy: {
       method: true,
-      url: true, // includes query params
+      url: normalizeUrl, // Normalize URLs for consistent ID generation
       headers: true,
       body: true,
       order: false
@@ -75,6 +85,15 @@ export function getPolly(
     if (rec.request.url.includes("http://localhost:4001")) {
       rec.request.url = rec.request.url.replace(
         "http://localhost:4001",
+        "https://testnet-api.4160.nodely.dev"
+      );
+    }
+
+    // Rewrite MainNet URLs to TestNet URLs
+    // This allows recording from MainNet but matching based on path (as TestNet) during replay
+    if (rec.request.url.includes("https://mainnet-api.4160.nodely.dev")) {
+      rec.request.url = rec.request.url.replace(
+        "https://mainnet-api.4160.nodely.dev",
         "https://testnet-api.4160.nodely.dev"
       );
     }
