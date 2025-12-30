@@ -67,14 +67,6 @@
       "desc": "Tests for the /v2/blocks/{round}/txids endpoint",
       "groups": ["Common Tests"]
     },
-    "POST v2_catchup_CATCHPOINT": {
-      "desc": "Tests for the /v2/catchup/{catchpoint} endpoint",
-      "groups": ["Common Tests"]
-    },
-    "DELETE v2_catchup_CATCHPOINT": {
-      "desc": "Tests for the /v2/catchup/{catchpoint} endpoint",
-      "groups": ["Common Tests"]
-    },
     "GET v2_deltas_txn_group_ID": {
       "desc": "Tests for the /v2/deltas/txn/group/{id} endpoint",
       "groups": ["Common Tests"]
@@ -95,10 +87,6 @@
       "desc": "Tests for the /v2/devmode/blocks/offset/{offset} endpoint",
       "groups": ["Common Tests"]
     },
-    "GET v2_experimental": {
-      "desc": "Tests for the /v2/experimental endpoint",
-      "groups": ["Common Tests"]
-    },
     "GET v2_ledger_supply": {
       "desc": "Tests for the /v2/ledger/supply endpoint",
       "groups": ["Common Tests"]
@@ -113,10 +101,6 @@
     },
     "POST v2_ledger_sync_ROUND": {
       "desc": "Tests for the /v2/ledger/sync/{round} endpoint",
-      "groups": ["Common Tests"]
-    },
-    "POST v2_shutdown": {
-      "desc": "Tests for the /v2/shutdown endpoint",
       "groups": ["Common Tests"]
     },
     "GET v2_stateproofs_ROUND": {
@@ -145,10 +129,6 @@
     },
     "POST v2_transactions": {
       "desc": "Tests for the /v2/transactions endpoint",
-      "groups": ["Common Tests"]
-    },
-    "POST v2_transactions_async": {
-      "desc": "Tests for the /v2/transactions/async endpoint",
       "groups": ["Common Tests"]
     },
     "GET v2_transactions_params": {
