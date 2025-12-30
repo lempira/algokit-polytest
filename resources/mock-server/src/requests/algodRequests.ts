@@ -66,7 +66,11 @@ export async function algosdkAlgodRequests() {
   await algod.getBlockTxids(round).do();
 
   // GET /v2/deltas/{round}
-  await algod.getLedgerStateDelta(round).do();
+  // Multiple rounds from Python tests to get comprehensive delta data
+  const deltaRounds = [24099447, 24099347];
+  for (const deltaRound of deltaRounds) {
+    await algod.getLedgerStateDelta(deltaRound).do();
+  }
 
   // GET /v2/stateproofs/{round}
   // TODO: find a valid value. Will likely have to be done with localnet
@@ -149,10 +153,16 @@ export async function algosdkAlgodRequests() {
   // SKIPPED ENDPOINTS
   // ============================================
 
+  // GET /v2/deltas/{round}/txn/group
+  // SKIP: Returns 501 (Not Implemented) on public Nodely APIs
+  // Requires node with ledger tracer enabled (EnableLedgerStateDeltaTracer config)
+  // Verified: Tested rounds 24099447, 24099347 and latest 100 blocks - all return 501
+  // const txnGroupDeltas = await algod.getTransactionGroupLedgerStateDeltasForRound(round).do();
+
   // GET /v2/deltas/txn/group/{id}
-  // SKIP: No group IDs available in Lora object mothers
-  // To implement, find a real testnet group ID and use:
-  // const groupId = "REAL_TESTNET_GROUP_ID";
+  // SKIP: Depends on above endpoint, also requires ledger tracer configuration
+  // Returns errors when called on public APIs
+  // const groupId = "VALID_GROUP_ID";
   // const deltaForGroup = await algod.getLedgerStateDeltaForTransactionGroup(groupId).do();
 
   // GET /v2/devmode/blocks/offset
@@ -169,9 +179,16 @@ export async function algosdkAlgodRequestsWithMainnet() {
     443
   );
 
-  // // GET /v2/stateproofs/{round}
-  // // TODO: find a valid value. Will likely have to be done with localnet
-  const stateProofRound = 55739610; // This has to be updated to get most recent 100 blocks
+  // GET /v2/deltas/{round} - MainNet rounds from Python tests
+  // Round 56492866 is an empty block (no transactions) with new protocol format
+  const mainnetDeltaRounds = [55240407, 56492866];
+  for (const deltaRound of mainnetDeltaRounds) {
+    await algod.getLedgerStateDelta(deltaRound).do();
+  }
+
+  // GET /v2/stateproofs/{round}
+  // Using valid stateproof from find-blocks-with-stateproof.ts script
+  const stateProofRound = 56950528;
   await algod.getStateProof(stateProofRound).do();
 }
 
