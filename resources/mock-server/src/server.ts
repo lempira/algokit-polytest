@@ -45,7 +45,12 @@ export async function startServer(
 
   // Catch-all proxy through PollyJS
   fastify.all("/*", async (request, reply) => {
-    const url = new URL(request.url, TESTNET_URLS[client]);
+    // Ensure we always use the TestNet URL, even if the incoming request is absolute
+    const pathAndQuery = request.url.startsWith("http")
+      ? new URL(request.url).pathname + new URL(request.url).search
+      : request.url;
+
+    const url = new URL(pathAndQuery, TESTNET_URLS[client]);
 
     fastify.log.debug(
       `[Fastify] Incoming request: ${request.method} ${request.url}`
@@ -94,7 +99,8 @@ export async function startServer(
     // Handle binary msgpack responses correctly - use arrayBuffer() instead of text()
     // to avoid UTF-8 corruption of binary data
     const contentType = response.headers.get("content-type") || "";
-    const isBinary = contentType.includes("msgpack") || contentType.includes("octet-stream");
+    const isBinary =
+      contentType.includes("msgpack") || contentType.includes("octet-stream");
     const data = isBinary
       ? Buffer.from(await response.arrayBuffer())
       : await response.text();
@@ -102,10 +108,17 @@ export async function startServer(
     fastify.log.debug(`[PollyJS] Response status: ${response.status}`);
     fastify.log.debug(`[PollyJS] Response content-type: ${contentType}`);
     fastify.log.debug(`[PollyJS] Response is binary: ${isBinary}`);
-    fastify.log.debug(`[PollyJS] Response size: ${isBinary ? (data as Buffer).length : (data as string).length} bytes`);
+    fastify.log.debug(
+      `[PollyJS] Response size: ${
+        isBinary ? (data as Buffer).length : (data as string).length
+      } bytes`
+    );
 
     if (!isBinary) {
-      const preview = (data as string).length > 200 ? (data as string).substring(0, 200) + "..." : data;
+      const preview =
+        (data as string).length > 200
+          ? (data as string).substring(0, 200) + "..."
+          : data;
       fastify.log.debug(`[PollyJS] Response preview: ${preview}`);
     }
 

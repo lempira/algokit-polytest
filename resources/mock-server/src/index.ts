@@ -8,6 +8,16 @@ Polly.register(FetchAdapter);
 
 export type Client = "algod" | "kmd" | "indexer";
 
+// Normalize URLs for ID calculation - treat MainNet and localhost as TestNet
+const normalizeUrl = (url: string) => {
+  return url
+    .replace(
+      "https://mainnet-api.4160.nodely.dev",
+      "https://testnet-api.4160.nodely.dev"
+    )
+    .replace("http://localhost:4001", "https://testnet-api.4160.nodely.dev");
+};
+
 export function getPolly(
   client: Client,
   config: {
@@ -26,7 +36,7 @@ export function getPolly(
     },
     matchRequestsBy: {
       method: true,
-      url: true, // includes query params
+      url: normalizeUrl, // Normalize URLs for consistent ID generation
       headers: true,
       body: true,
       order: false
@@ -47,25 +57,33 @@ export function getPolly(
 
   const polly = new Polly(client, pollyConfig);
 
+  // Store msgpack bodies during recording so they can be persisted
+  // Key: request URL, Value: base64-encoded body
+  const msgpackBodies = new Map<string, string>();
+
   // Encode binary msgpack responses as base64 before persisting to HAR
   polly.server.any().on("beforePersist", (_req, rec) => {
     const contentType = rec.response.headers.find(
       (h: any) => h.name.toLowerCase() === "content-type"
     )?.value;
 
-    if (contentType?.includes("msgpack") && rec.response.content) {
-      // If we have binary data, ensure it's base64 encoded for storage
-      if (rec.response.content.text) {
-        // Check if it's already a string (might be base64 already)
-        if (typeof rec.response.content.text === "string") {
-          // Already encoded, mark it as such
-          rec.response.content.encoding = "base64";
-        } else {
-          // Convert binary to base64 string
-          const buffer = Buffer.from(rec.response.content.text);
-          rec.response.content.text = buffer.toString("base64");
-          rec.response.content.encoding = "base64";
-        }
+    if (contentType?.includes("msgpack")) {
+      console.log("beforePersist: msgpack detected for", rec.request.url);
+
+      // Retrieve the body we stored during beforeResponse
+      const storedBody = msgpackBodies.get(rec.request.url);
+
+      if (storedBody) {
+        rec.response.content.text = storedBody;
+        rec.response.content.encoding = "base64";
+        console.log(
+          "  Retrieved stored msgpack body, length:",
+          storedBody.length
+        );
+        // Clean up
+        msgpackBodies.delete(rec.request.url);
+      } else {
+        console.log("  WARNING: No stored body found for msgpack response!");
       }
     }
 
@@ -75,6 +93,15 @@ export function getPolly(
     if (rec.request.url.includes("http://localhost:4001")) {
       rec.request.url = rec.request.url.replace(
         "http://localhost:4001",
+        "https://testnet-api.4160.nodely.dev"
+      );
+    }
+
+    // Rewrite MainNet URLs to TestNet URLs
+    // This allows recording from MainNet but matching based on path (as TestNet) during replay
+    if (rec.request.url.includes("https://mainnet-api.4160.nodely.dev")) {
+      rec.request.url = rec.request.url.replace(
+        "https://mainnet-api.4160.nodely.dev",
         "https://testnet-api.4160.nodely.dev"
       );
     }
@@ -91,8 +118,8 @@ export function getPolly(
     );
   });
 
-  // Decode base64-encoded msgpack responses from HAR files
-  polly.server.any().on("beforeResponse", (_req, res) => {
+  // Handle msgpack response bodies for both recording and replay
+  polly.server.any().on("beforeResponse", (req, res) => {
     console.log("beforeResponse triggered");
     console.log("Content-Type:", res.headers["content-type"]);
     console.log("Body type:", typeof res.body);
@@ -101,16 +128,35 @@ export function getPolly(
       typeof res.body === "string" ? res.body.substring(0, 50) : "NOT A STRING"
     );
 
-    // Base64 decode attempt
-    if (
-      res.body &&
-      typeof res.body === "string" &&
-      res.headers["content-type"]?.includes("msgpack")
-    ) {
-      console.log("Attempting base64 decode...");
-      const buffer = Buffer.from(res.body, "base64");
-      res.body = new Uint8Array(buffer) as any;
-      console.log("Decoded body type:", res.body?.constructor.name);
+    const contentType = res.headers["content-type"];
+
+    if (contentType?.includes("msgpack") && res.body) {
+      if (polly.mode === "record") {
+        // During recording, body arrives as base64 string from PollyJS
+        if (typeof res.body === "string") {
+          console.log("RECORD mode: storing msgpack body");
+          // Store the base64 string for persistence
+          msgpackBodies.set(req.url, res.body);
+          console.log(
+            "  Stored msgpack for:",
+            req.url,
+            "length:",
+            res.body.length
+          );
+          // Decode to binary for algosdk to consume
+          const buffer = Buffer.from(res.body, "base64");
+          res.body = new Uint8Array(buffer) as any;
+          console.log("  Converted to Uint8Array for SDK");
+        }
+      } else {
+        // During replay, decode base64 string back to binary
+        if (typeof res.body === "string") {
+          console.log("REPLAY mode: decoding base64 to msgpack");
+          const buffer = Buffer.from(res.body, "base64");
+          res.body = new Uint8Array(buffer) as any;
+          console.log("  Decoded body type:", res.body?.constructor.name);
+        }
+      }
     }
   });
 
