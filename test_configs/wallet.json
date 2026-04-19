@@ -162,12 +162,10 @@
   },
   "target": {
     "pytest": {
-      "out_dir": "../../tests/modules/transact",
-      "resource_dir": "../../tests/modules/transact/polytest_resources"
+      "out_dir": "../../tests/wallet_utils",
     },
     "vitest": {
-      "out_dir": "../../tests",
-      "resource_dir": "../../tests/polytest_resources"
+      "out_dir": "../../tests/wallet_utils",
     }
   },
   "document": {
