@@ -1,7 +1,7 @@
 {
   "name": "algod_client Test Plan",
   "package_name": "algod_client",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "suite": {
     "GET genesis": {
       "desc": "Tests for the /genesis endpoint",
