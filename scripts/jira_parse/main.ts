@@ -1,6 +1,7 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import process from "node:process";
+import { parse } from "@std/csv";
 
 interface JiraIssue {
   summary: string;
@@ -47,7 +48,7 @@ function formatDescription(
   return result;
 }
 
-function parseCSVRecords(filePath: string): string[][] {
+function parseCSVFile(filePath: string): JiraIssue[] {
   const content = fs.readFileSync(filePath, "utf-8");
 
   // Remove BOM if present
@@ -55,63 +56,8 @@ function parseCSVRecords(filePath: string): string[][] {
     ? content.slice(1)
     : content;
 
-  const records: string[][] = [];
-  let currentRow: string[] = [];
-  let currentField = "";
-  let inQuotes = false;
-  let i = 0;
-
-  while (i < cleanContent.length) {
-    const char = cleanContent[i];
-    const nextChar = cleanContent[i + 1];
-
-    if (char === '"') {
-      if (inQuotes) {
-        if (nextChar === '"') {
-          // Escaped quote
-          currentField += '"';
-          i += 2;
-          continue;
-        } else {
-          // End of quoted field
-          inQuotes = false;
-        }
-      } else {
-        // Start of quoted field
-        inQuotes = true;
-      }
-    } else if (char === "," && !inQuotes) {
-      currentRow.push(currentField.trim());
-      currentField = "";
-    } else if ((char === "\n" || char === "\r") && !inQuotes) {
-      if (currentField !== "" || currentRow.length > 0) {
-        currentRow.push(currentField.trim());
-        records.push(currentRow);
-      }
-      currentRow = [];
-      currentField = "";
-      // Handle \r\n
-      if (char === "\r" && nextChar === "\n") {
-        i++;
-      }
-    } else {
-      currentField += char;
-    }
-
-    i++;
-  }
-
-  // Handle last field/row if file doesn't end with newline
-  if (currentField !== "" || currentRow.length > 0) {
-    currentRow.push(currentField.trim());
-    records.push(currentRow);
-  }
-
-  return records;
-}
-
-function parseCSVFile(filePath: string): JiraIssue[] {
-  const records = parseCSVRecords(filePath);
+  // Parse as arrays without column constraints
+  const records = parse(cleanContent) as string[][];
 
   if (records.length === 0) {
     return [];
