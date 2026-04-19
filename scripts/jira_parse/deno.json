@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "main": "deno run --allow-read=wallet.csv --allow-write=../../test_configs/wallet.jsonc main.ts"
+  },
+  "imports": {}
+}

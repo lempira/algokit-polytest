@@ -3,3 +3,6 @@
 
 # Packages is generated for testing purposes right now, but can be removed once we integrate into proper repos
 /packages/ 
+
+node_modules/
+*.csv

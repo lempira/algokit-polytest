@@ -1,0 +1,178 @@
+{
+  "name": "Wallet utilities",
+  "package_name": "algokit_utils",
+  "resource_dir": "../resources/",
+  "version": "0.7.0",
+  "suite":   {
+    "AK-1004": {
+      "desc": "AK-1004: Dapp connection",
+      "groups": [
+        "AK-1004"
+      ]
+    },
+    "AK-1003": {
+      "desc": "AK-1003: Staking",
+      "groups": [
+        "AK-1003"
+      ]
+    },
+    "AK-1002": {
+      "desc": "AK-1002: Signing",
+      "groups": [
+        "AK-1002"
+      ]
+    },
+    "AK-1001": {
+      "desc": "AK-1001: Payment",
+      "groups": [
+        "AK-1001"
+      ]
+    },
+    "AK-1000": {
+      "desc": "AK-1000: View Balance. See how many assets are associated with an address",
+      "groups": [
+        "AK-1000"
+      ]
+    },
+    "AK-992": {
+      "desc": "AK-992: Address creation. ability to create an algo address and view its current state",
+      "groups": [
+        "AK-992"
+      ]
+    }
+  },
+  "group":   {
+    "AK-1004": {
+      "desc": "AK-1004: Dapp connection",
+      "test": {
+        "AK-1026": {
+          "desc": "AK-1026: LiquidAuth. As a user I would like to connect to a Dapp with LiquidAuth so I can use its services"
+        },
+        "AK-1025": {
+          "desc": "AK-1025: Wallet connect. As a user I would like to connect to a Dapp with wallet connect so I can use its services"
+        }
+      }
+    },
+    "AK-1003": {
+      "desc": "AK-1003: Staking",
+      "test": {
+        "AK-1024": {
+          "desc": "AK-1024: View current amount staked. As a user I want to know how much funds I current have staked so I can calculate the amount of rewards I can expect."
+        },
+        "AK-1023": {
+          "desc": "AK-1023: View rewards. As a user I want to view how much rewards I got and when so that I can accurately report my income"
+        },
+        "AK-1022": {
+          "desc": "AK-1022: Stake funds. As a user I want to be able to stake my funds so that I can receive rewards"
+        }
+      }
+    },
+    "AK-1002": {
+      "desc": "AK-1002: Signing",
+      "test": {
+        "AK-1248": {
+          "desc": "AK-1248: sign arbitrary data. As a user I want to proof that I own a certain key, so I can get access to a service."
+        },
+        "AK-1021": {
+          "desc": "AK-1021: Export unsigned transaction. As a user I want to export an unsigned or partially signed transaction so that someone else can do something with it"
+        },
+        "AK-1020": {
+          "desc": "AK-1020: Hardware sign transaction. As a user I want to share my unsigned transaction with a HSM so that they can sign it on my behalf"
+        },
+        "AK-1019": {
+          "desc": "AK-1019: Sign transaction. As a user I want to sign a transaction so it can be executed on the blockchain"
+        },
+        "AK-1018": {
+          "desc": "AK-1018: Review transaction. As a user I want to review a transaction so I know that its safe to sign it"
+        }
+      }
+    },
+    "AK-1001": {
+      "desc": "AK-1001: Payment",
+      "test": {
+        "AK-1017": {
+          "desc": "AK-1017: Transaction costs. As a user I want to know what the cost is for executing the transaction so that I don’t run into any surprises (also tax reasons)"
+        },
+        "AK-1016": {
+          "desc": "AK-1016: Add Metadata. As a user I want to add Metadata to my payments so that I can append information (encrypted or not)"
+        },
+        "AK-1015": {
+          "desc": "AK-1015: Send NFT. As a user I want to be able to send ARC NFT tokens to people so that I can pay my dues"
+        },
+        "AK-1014": {
+          "desc": "AK-1014: Send smart contract asset. As a user I want to be able to send ARC20 tokens to people so that I can pay my dues"
+        },
+        "AK-1013": {
+          "desc": "AK-1013: Send ASA. As a user I want to send one or more native assets to people so I can pay my dues"
+        },
+        "AK-1012": {
+          "desc": "AK-1012: Make multi-sig payment. As a user I want to create and co-sign a payment for n people, so we can pay out dues"
+        },
+        "AK-1011": {
+          "desc": "AK-1011: Make complex payment. As a user I want to send numerous interdependent transaction so that I can reduce costs and add business logic"
+        },
+        "AK-1010": {
+          "desc": "AK-1010: Make payment. As a user I want to make a payment to so I can pay my dues"
+        },
+        "AK-995": {
+          "desc": "AK-995: Split funds. As a user I would like to split my funds over various accounts without having to remember additional mnemonics"
+        }
+      }
+    },
+    "AK-1000": {
+      "desc": "AK-1000: View Balance. See how many assets are associated with an address",
+      "test": {
+        "AK-1009": {
+          "desc": "AK-1009: View smart contract asset. As a user I want to know how much ARC20 assets I have so I know what I have in my wallet"
+        },
+        "AK-1008": {
+          "desc": "AK-1008: Current NFT balance. As a user I want to see my NFTs quickly so I know what NFTS  are in my wallet"
+        },
+        "AK-1007": {
+          "desc": "AK-1007: Current ASA balance. As a user I want to see my ASA balance quickly so I know what other currencies are in my wallet"
+        },
+        "AK-1006": {
+          "desc": "AK-1006: Current balance. As a user I want to view my balance quickly so that I know how much algo I have"
+        },
+        "AK-996": {
+          "desc": "AK-996: View only wallet. As a user I want to add a public address to my wallet to view it’s balance (and make transactions)"
+        }
+      }
+    },
+    "AK-992": {
+      "desc": "AK-992: Address creation. ability to create an algo address and view its current state",
+      "test": {
+        "AK-999": {
+          "desc": "AK-999: Migrate wallet*. As a user I want to migrate from my single address 25 word to a multi-address 24 words wallet so I can split my funds"
+        },
+        "AK-998": {
+          "desc": "AK-998: Recover multi-sig. As a user I want to be able to recover my joined account so I can view my balance"
+        },
+        "AK-997": {
+          "desc": "AK-997: Create multi-sig. As a user I want to split the responsibility/security of my funds with other people so I can still recover it when I lose my mnemonic"
+        },
+        "AK-994": {
+          "desc": "AK-994: Recover address. As a user I would like to recover my 24 or 25 mnemonic words so I can see my funds"
+        },
+        "AK-993": {
+          "desc": "AK-993: Create address. As a user I would like to create an address using 24 or 25 mnemonic words so that I can receive funds"
+        }
+      }
+    }
+  },
+  "target":   {
+    "pytest": {
+      "out_dir": "../../tests/modules/transact",
+      "resource_dir": "../../tests/modules/transact/polytest_resources"
+    },
+    "vitest": {
+      "out_dir": "../../tests",
+      "resource_dir": "../../tests/polytest_resources"
+    }
+  },
+  "document":   {
+    "markdown": {
+      "out_file": "../docs/test_plans/transact.md"
+    }
+  }
+}
