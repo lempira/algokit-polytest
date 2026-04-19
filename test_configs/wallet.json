@@ -168,9 +168,4 @@
       "out_dir": "../../tests/wallet_utils"
     }
   },
-  "document": {
-    "markdown": {
-      "out_file": "../../tests/wallet_utils/test_plan.md"
-    }
-  }
 }
