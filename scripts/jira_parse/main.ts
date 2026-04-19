@@ -2,6 +2,13 @@ import * as fs from "node:fs";
 import process from "node:process";
 import { parse } from "@std/csv";
 
+function sanitizeContent(content: string): string {
+  return content
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, "")
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .replace(/\u00A0/g, "");
+}
+
 interface JiraIssue {
   summary: string;
   issueKey: string;
@@ -50,13 +57,11 @@ function formatDescription(
 function parseCSVFile(filePath: string): JiraIssue[] {
   const content = fs.readFileSync(filePath, "utf-8");
 
-  // Remove BOM if present
-  const cleanContent = content.charCodeAt(0) === 0xFEFF
-    ? content.slice(1)
-    : content;
+  // Sanitize content to remove control characters
+  const sanitizedContent = sanitizeContent(content);
 
   // Parse as arrays without column constraints
-  const records = parse(cleanContent) as string[][];
+  const records = parse(sanitizedContent) as string[][];
 
   if (records.length === 0) {
     return [];
