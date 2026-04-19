@@ -170,7 +170,7 @@
   },
   "document": {
     "markdown": {
-      "out_file": "../docs/test_plans/transact.md"
+      "out_file": "../../tests/wallet_utils/test_plan.md"
     }
   }
 }
