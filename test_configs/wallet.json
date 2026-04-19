@@ -162,10 +162,10 @@
   },
   "target": {
     "pytest": {
-      "out_dir": "../../tests/wallet_utils",
+      "out_dir": "../../tests/wallet_utils"
     },
     "vitest": {
-      "out_dir": "../../tests/wallet_utils",
+      "out_dir": "../../tests/wallet_utils"
     }
   },
   "document": {
