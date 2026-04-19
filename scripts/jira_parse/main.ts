@@ -7,6 +7,7 @@ interface JiraIssue {
   issueKey: string;
   issueType: string;
   description: string;
+  acceptanceCriteria?: string;
   parentKey?: string;
   parentSummary?: string;
 }
@@ -34,12 +35,16 @@ function formatDescription(
   key: string,
   name: string,
   description: string,
+  acceptanceCriteria?: string,
 ): string {
-  const base = `${key}: ${name}`;
+  let result = `${key}: ${name}`;
   if (description && description.trim()) {
-    return `${base}. ${description.trim()}`;
+    result += `. ${description.trim()}`;
   }
-  return base;
+  if (acceptanceCriteria && acceptanceCriteria.trim()) {
+    result += `\n\nAcceptance Criteria:\n${acceptanceCriteria.trim()}`;
+  }
+  return result;
 }
 
 function parseCSVRecords(filePath: string): string[][] {
@@ -119,6 +124,7 @@ function parseCSVFile(filePath: string): JiraIssue[] {
   const keyIdx = headers.indexOf("Issue key");
   const typeIdx = headers.indexOf("Issue Type");
   const descIdx = headers.indexOf("Description");
+  const acceptanceCriteriaIdx = headers.indexOf("Custom field (Acceptance Criteria)");
   const parentKeyIdx = headers.indexOf("Parent key");
   const parentSummaryIdx = headers.indexOf("Parent summary");
 
@@ -136,6 +142,9 @@ function parseCSVFile(filePath: string): JiraIssue[] {
         issueKey: fields[keyIdx]?.trim() || "",
         issueType: issueType,
         description: fields[descIdx]?.trim() || "",
+        acceptanceCriteria: acceptanceCriteriaIdx >= 0
+          ? fields[acceptanceCriteriaIdx]?.trim() || undefined
+          : undefined,
         parentKey: fields[parentKeyIdx]?.trim() || undefined,
         parentSummary: fields[parentSummaryIdx]?.trim() || undefined,
       });
@@ -160,7 +169,7 @@ function generateConfig(issues: JiraIssue[]): ConfigOutput {
     const epicKey = epic.issueKey;
     const epicName = epic.summary;
     const epicDesc = epic.description;
-    const formattedDesc = formatDescription(epicKey, epicName, epicDesc);
+    const formattedDesc = formatDescription(epicKey, epicName, epicDesc, epic.acceptanceCriteria);
 
     // Add to suite
     suite[epicKey] = {
@@ -181,7 +190,7 @@ function generateConfig(issues: JiraIssue[]): ConfigOutput {
     const storyName = story.summary;
     const storyDesc = story.description;
     const parentKey = story.parentKey;
-    const formattedDesc = formatDescription(storyKey, storyName, storyDesc);
+    const formattedDesc = formatDescription(storyKey, storyName, storyDesc, story.acceptanceCriteria);
 
     if (parentKey && group[parentKey]) {
       group[parentKey].test[storyKey] = {

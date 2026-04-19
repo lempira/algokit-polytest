@@ -46,10 +46,10 @@
       "desc": "AK-1004: Dapp connection",
       "test": {
         "AK-1026": {
-          "desc": "AK-1026: LiquidAuth. As a user I would like to connect to a Dapp with LiquidAuth so I can use its services"
+          "desc": "AK-1026: LiquidAuth. As a user I would like to connect to a Dapp with LiquidAuth so I can use its services\n\nAcceptance Criteria:\nGiven I have setup a wallet\n\nThen I can connectthrough LiquidAuth with a Dapp\n\nAnd send/receive transactions"
         },
         "AK-1025": {
-          "desc": "AK-1025: Wallet connect. As a user I would like to connect to a Dapp with wallet connect so I can use its services"
+          "desc": "AK-1025: Wallet connect. As a user I would like to connect to a Dapp with wallet connect so I can use its services\n\nAcceptance Criteria:\nGiven I have setup a wallet\n\nThen I can connect through wallet-connect  with a Dapp\n\nAnd send/receive transactions"
         }
       }
     },
@@ -57,13 +57,13 @@
       "desc": "AK-1003: Staking",
       "test": {
         "AK-1024": {
-          "desc": "AK-1024: View current amount staked. As a user I want to know how much funds I current have staked so I can calculate the amount of rewards I can expect."
+          "desc": "AK-1024: View current amount staked. As a user I want to know how much funds I current have staked so I can calculate the amount of rewards I can expect.\n\nAcceptance Criteria:\nGiven I have created a wallet\n\nAnd split my funds over addresses\n\nAnd staked my funds\n\nThen I can see which addresses are staked\n\nDo I have more than 30K algo"
         },
         "AK-1023": {
-          "desc": "AK-1023: View rewards. As a user I want to view how much rewards I got and when so that I can accurately report my income"
+          "desc": "AK-1023: View rewards. As a user I want to view how much rewards I got and when so that I can accurately report my income\n\nAcceptance Criteria:\nGiven I have staked my funds to a node\n\nThen I can see how much rewards I’m getting per address\n\nAnd which block I received those rewards\n\nreturn object:\n\n* when I won the block\n* When I got the payment block\n* reward amount\n* convert block to date:time UTC\n* fees paid"
         },
         "AK-1022": {
-          "desc": "AK-1022: Stake funds. As a user I want to be able to stake my funds so that I can receive rewards"
+          "desc": "AK-1022: Stake funds. As a user I want to be able to stake my funds so that I can receive rewards\n\nAcceptance Criteria:\nGiven I have setup my wallet\n\nAnd I have a balance over 30K Algo\n\nThen I can request a keyreg transaction from a node\n\nAnd I can sign the keyreg transaction\n\n\n\nexclusion: pooled staking"
         }
       }
     },
@@ -71,19 +71,19 @@
       "desc": "AK-1002: Signing",
       "test": {
         "AK-1248": {
-          "desc": "AK-1248: sign arbitrary data. As a user I want to proof that I own a certain key, so I can get access to a service."
+          "desc": "AK-1248: sign arbitrary data. As a user I want to proof that I own a certain key, so I can get access to a service.\n\nAcceptance Criteria:\nGiven I have setup a wallet\n\nAnd I contect to a service\n\nAnd the service requests me to sign a nounce with a specific key\n\nThen I can sign that nounce and return result\n\n\n\nexamples:\n\n[https://docs.metamask.io/wallet/how-to/sign-data/siwe/|https://docs.metamask.io/wallet/how-to/sign-data/siwe/|smart-link] \n\n[https://cips.cardano.org/cip/CIP-0008|https://cips.cardano.org/cip/CIP-0008|smart-link]"
         },
         "AK-1021": {
-          "desc": "AK-1021: Export unsigned transaction. As a user I want to export an unsigned or partially signed transaction so that someone else can do something with it"
+          "desc": "AK-1021: Export unsigned transaction. As a user I want to export an unsigned or partially signed transaction so that someone else can do something with it\n\nAcceptance Criteria:\nGiven I have reviewed the transaction\n\nThen I can share the unsigned transaction with Base64 encoding"
         },
         "AK-1020": {
-          "desc": "AK-1020: Hardware sign transaction. As a user I want to share my unsigned transaction with a HSM so that they can sign it on my behalf"
+          "desc": "AK-1020: Hardware sign transaction. As a user I want to share my unsigned transaction with a HSM so that they can sign it on my behalf\n\nAcceptance Criteria:\nGiven I have review the transaction\n\nThen I can connect to a hardware module like Ledger or HashiCorp\n\nAnd get it to sign my transaction\n\nThen Submit it to the blockchain"
         },
         "AK-1019": {
-          "desc": "AK-1019: Sign transaction. As a user I want to sign a transaction so it can be executed on the blockchain"
+          "desc": "AK-1019: Sign transaction. As a user I want to sign a transaction so it can be executed on the blockchain\n\nAcceptance Criteria:\nGiven I have reviewed my transaction\n\nThen I can sign the transaction \n\nAnd share with thirdparty (dapp)"
         },
         "AK-1018": {
-          "desc": "AK-1018: Review transaction. As a user I want to review a transaction so I know that its safe to sign it"
+          "desc": "AK-1018: Review transaction. As a user I want to review a transaction so I know that its safe to sign it\n\nAcceptance Criteria:\nGiven I have a well formed transaction\n\nThen I can check variables like:\n\n# What assets are being send\n# Where they are sent to\n# Any meta data in the Tx\n# From which address its send\n# potential ramifications/understanding side effects like losing rekey"
         }
       }
     },
@@ -91,31 +91,31 @@
       "desc": "AK-1001: Payment",
       "test": {
         "AK-1017": {
-          "desc": "AK-1017: Transaction costs. As a user I want to know what the cost is for executing the transaction so that I don’t run into any surprises (also tax reasons)"
+          "desc": "AK-1017: Transaction costs. As a user I want to know what the cost is for executing the transaction so that I don’t run into any surprises (also tax reasons)\n\nAcceptance Criteria:\nGiven I have a well formed transaction\n\nThen the SDK can tell me what the cost of executing this transaction will be\n\n\n\n(it might need to ask the node for this information)"
         },
         "AK-1016": {
-          "desc": "AK-1016: Add Metadata. As a user I want to add Metadata to my payments so that I can append information (encrypted or not)"
+          "desc": "AK-1016: Add Metadata. As a user I want to add Metadata to my payments so that I can append information (encrypted or not)\n\nAcceptance Criteria:\nGiven I have a well formed transaction\n\nThen I can add metadata to that transactions of free form\n\nin ARC2 form"
         },
         "AK-1015": {
-          "desc": "AK-1015: Send NFT. As a user I want to be able to send ARC NFT tokens to people so that I can pay my dues"
+          "desc": "AK-1015: Send NFT. As a user I want to be able to send ARC NFT tokens to people so that I can pay my dues\n\nAcceptance Criteria:\nGiven I have created addresses\n\nAnd I know the balance\n\nThen I can create a well formed NFT transaction"
         },
         "AK-1014": {
-          "desc": "AK-1014: Send smart contract asset. As a user I want to be able to send ARC20 tokens to people so that I can pay my dues"
+          "desc": "AK-1014: Send smart contract asset. As a user I want to be able to send ARC20 tokens to people so that I can pay my dues\n\nAcceptance Criteria:\nGiven I have created addresses\n\nAnd I know the balance\n\nThen I can create a well formed ARC20 transaction"
         },
         "AK-1013": {
-          "desc": "AK-1013: Send ASA. As a user I want to send one or more native assets to people so I can pay my dues"
+          "desc": "AK-1013: Send ASA. As a user I want to send one or more native assets to people so I can pay my dues\n\nAcceptance Criteria:\nGiven I have created addresses\n\nAnd I know the balance\n\nThen I can create a well formed ASA transaction"
         },
         "AK-1012": {
-          "desc": "AK-1012: Make multi-sig payment. As a user I want to create and co-sign a payment for n people, so we can pay out dues"
+          "desc": "AK-1012: Make multi-sig payment. As a user I want to create and co-sign a payment for n people, so we can pay out dues\n\nAcceptance Criteria:\nGiven I have created a multisig- address\n\nAnd I know the balance\n\nThen I can create a well formed transaction"
         },
         "AK-1011": {
-          "desc": "AK-1011: Make complex payment. As a user I want to send numerous interdependent transaction so that I can reduce costs and add business logic"
+          "desc": "AK-1011: Make complex payment. As a user I want to send numerous interdependent transaction so that I can reduce costs and add business logic\n\nAcceptance Criteria:\nGiven I have created my wallet \n\nAnd I know my balance\n\nThen I can create a sequence of well formed transactions with various assets and outputs"
         },
         "AK-1010": {
-          "desc": "AK-1010: Make payment. As a user I want to make a payment to so I can pay my dues"
+          "desc": "AK-1010: Make payment. As a user I want to make a payment to so I can pay my dues\n\nAcceptance Criteria:\nGiven I have created addresses\n\nAnd I know the balance\n\nThen I can create a well formed Algo transaction"
         },
         "AK-995": {
-          "desc": "AK-995: Split funds. As a user I would like to split my funds over various accounts without having to remember additional mnemonics"
+          "desc": "AK-995: Split funds. As a user I would like to split my funds over various accounts without having to remember additional mnemonics\n\nAcceptance Criteria:\nGiven I have derived 20 addresses\n\nThen I can send funds to one of those addresses\n\nAnd the wallet will keep track of those funds"
         }
       }
     },
@@ -123,19 +123,19 @@
       "desc": "AK-1000: View Balance. See how many assets are associated with an address",
       "test": {
         "AK-1009": {
-          "desc": "AK-1009: View smart contract asset. As a user I want to know how much ARC20 assets I have so I know what I have in my wallet"
+          "desc": "AK-1009: View smart contract asset. As a user I want to know how much ARC20 assets I have so I know what I have in my wallet\n\nAcceptance Criteria:\nGiven I have created 20 addresses\n\nThen I can see how much ARC20 I have on those addresses\n\nAnd I can see how much ARC20 I have in my wallet\n\n\n\nARC20 → ARC84"
         },
         "AK-1008": {
-          "desc": "AK-1008: Current NFT balance. As a user I want to see my NFTs quickly so I know what NFTS  are in my wallet"
+          "desc": "AK-1008: Current NFT balance. As a user I want to see my NFTs quickly so I know what NFTS  are in my wallet\n\nAcceptance Criteria:\nGiven I have created 20 addresses\n\nThen I can see how much NFTs I have on those addresses\n\nAnd I can see how much NFT I have in my wallet\n\nAnd its metadata"
         },
         "AK-1007": {
-          "desc": "AK-1007: Current ASA balance. As a user I want to see my ASA balance quickly so I know what other currencies are in my wallet"
+          "desc": "AK-1007: Current ASA balance. As a user I want to see my ASA balance quickly so I know what other currencies are in my wallet\n\nAcceptance Criteria:\nGiven I have created 20 addresses\n\nThen I can see how much ASA I have on those addresses\n\nAnd I can see how much ASA I have in my wallet"
         },
         "AK-1006": {
-          "desc": "AK-1006: Current balance. As a user I want to view my balance quickly so that I know how much algo I have"
+          "desc": "AK-1006: Current balance. As a user I want to view my balance quickly so that I know how much algo I have\n\nAcceptance Criteria:\nGiven I have created 20 addresses\n\nThen I can see how much Algo I have on those addresses\n\nAnd I can see how much Algo I have in my wallet"
         },
         "AK-996": {
-          "desc": "AK-996: View only wallet. As a user I want to add a public address to my wallet to view it’s balance (and make transactions)"
+          "desc": "AK-996: View only wallet. As a user I want to add a public address to my wallet to view it’s balance (and make transactions)\n\nAcceptance Criteria:\nGiven I have a public key\n\nor a batch of public keys\n\nAnd track Balance\n\nAnd construct unsigned transactions\n\n\n\n(for hardware wallets)"
         }
       }
     },
@@ -143,19 +143,19 @@
       "desc": "AK-992: Address creation. ability to create an algo address and view its current state",
       "test": {
         "AK-999": {
-          "desc": "AK-999: Migrate wallet*. As a user I want to migrate from my single address 25 word to a multi-address 24 words wallet so I can split my funds"
+          "desc": "AK-999: Migrate wallet*. As a user I want to migrate from my single address 25 word to a multi-address 24 words wallet so I can split my funds\n\nAcceptance Criteria:\nGiven I have a 25 word, single account\n\nAnd I have a 24 word, multi account\n\nThen I can move all my funds from my account to the second account"
         },
         "AK-998": {
-          "desc": "AK-998: Recover multi-sig. As a user I want to be able to recover my joined account so I can view my balance"
+          "desc": "AK-998: Recover multi-sig. As a user I want to be able to recover my joined account so I can view my balance\n\nAcceptance Criteria:\nGiven I have derived 20 addresses\n\nAnd I have my co-signers n public keys\n\nAnd I know the order\n\nThen I can derive the multi-sig address\n\nAnd track the address"
         },
         "AK-997": {
-          "desc": "AK-997: Create multi-sig. As a user I want to split the responsibility/security of my funds with other people so I can still recover it when I lose my mnemonic"
+          "desc": "AK-997: Create multi-sig. As a user I want to split the responsibility/security of my funds with other people so I can still recover it when I lose my mnemonic\n\nAcceptance Criteria:\nGiven I have derived 20 addresses\n\nAnd I have my co-signers n public keys\n\nAnd I know the order\n\nThen I can derive the multi-sig address\n\nAnd track the address"
         },
         "AK-994": {
-          "desc": "AK-994: Recover address. As a user I would like to recover my 24 or 25 mnemonic words so I can see my funds"
+          "desc": "AK-994: Recover address. As a user I would like to recover my 24 or 25 mnemonic words so I can see my funds\n\nAcceptance Criteria:\n+Given+ _I have the SDK running_\n\n+And+ I have an mnemonic\n\n+Then+ I can derive 20 addresses \n\nAnd have the public private keys\n\n\n\nRef: [+BIP-44+|https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki]"
         },
         "AK-993": {
-          "desc": "AK-993: Create address. As a user I would like to create an address using 24 or 25 mnemonic words so that I can receive funds"
+          "desc": "AK-993: Create address. As a user I would like to create an address using 24 or 25 mnemonic words so that I can receive funds\n\nAcceptance Criteria:\n+Given+ _I have the SDK running_\n\n+And+ I request an mnemonic\n\n+Then+ I can derive 20 addresses \n\nAnd have the private public keys\n\n\n\nRef: [+BIP-44+|https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki]"
         }
       }
     }
