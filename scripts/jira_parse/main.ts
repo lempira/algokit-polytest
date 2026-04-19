@@ -101,62 +101,17 @@ function parseCSVFile(filePath: string): JiraIssue[] {
   return issues;
 }
 
-function getDefaultConfig(): ConfigOutput {
-  return {
-    name: "Wallet utilities",
-    package_name: "algokit_utils",
-    resource_dir: "../resources/",
-    version: "0.7.0",
-    suite: {},
-    group: {},
-    target: {
-      pytest: {
-        out_dir: "../../tests/modules/transact",
-        resource_dir: "../../tests/modules/transact/polytest_resources",
-      },
-      vitest: {
-        out_dir: "../../tests",
-        resource_dir: "../../tests/polytest_resources",
-      },
-    },
-    document: {
-      markdown: {
-        out_file: "../docs/test_plans/transact.md",
-      },
-    },
-  };
-}
-
-function loadExistingConfig(existingConfigPath: string): ConfigOutput | null {
-  if (!fs.existsSync(existingConfigPath)) {
-    return null;
-  }
-
-  try {
-    const content = fs.readFileSync(existingConfigPath, "utf-8");
-    // Strip comments and parse JSON
-    const jsonContent = content.replace(/\/\/.*$/gm, "").replace(
-      /\/\*[\s\S]*?\*\//g,
-      "",
-    );
-    return JSON.parse(jsonContent) as ConfigOutput;
-  } catch {
-    console.warn(
-      `Warning: Could not parse existing config at ${existingConfigPath}, using defaults`,
-    );
-    return null;
-  }
+function loadExistingConfig(existingConfigPath: string): ConfigOutput {
+  const content = fs.readFileSync(existingConfigPath, "utf-8");
+  return JSON.parse(content) as ConfigOutput;
 }
 
 function generateConfig(
   issues: JiraIssue[],
-  existingConfigPath?: string,
+  existingConfigPath: string,
 ): ConfigOutput {
   // Load existing config or use defaults
-  const existingConfig = existingConfigPath
-    ? loadExistingConfig(existingConfigPath)
-    : null;
-  const baseConfig = existingConfig || getDefaultConfig();
+  const existingConfig = loadExistingConfig(existingConfigPath);
 
   const epics = issues.filter((i) => i.issueType === "Epic");
   const stories = issues.filter((i) => i.issueType === "Story");
@@ -226,7 +181,7 @@ function generateConfig(
 
   // Merge: keep existing config but update suite and group
   return {
-    ...baseConfig,
+    ...existingConfig as ConfigOutput,
     suite,
     group,
   };

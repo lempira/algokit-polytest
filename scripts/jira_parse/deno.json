@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "wallet": "deno run --allow-read=wallet.csv --allow-read=../../test_configs/wallet.jsonc --allow-write=../../test_configs/wallet.jsonc main.ts ./wallet.csv ../../test_configs/wallet.jsonc"
+    "wallet": "deno run --allow-read=wallet.csv --allow-read=../../test_configs/wallet.json --allow-write=../../test_configs/wallet.json main.ts ./wallet.csv ../../test_configs/wallet.json"
   },
   "imports": {
     "@std/csv": "jsr:@std/csv@^1.0.6"
