@@ -3,7 +3,7 @@
   "package_name": "algokit_utils",
   "resource_dir": "../resources/",
   "version": "0.7.0",
-  "suite":   {
+  "suite": {
     "AK-1004": {
       "desc": "AK-1004: Dapp connection",
       "groups": [
@@ -41,7 +41,7 @@
       ]
     }
   },
-  "group":   {
+  "group": {
     "AK-1004": {
       "desc": "AK-1004: Dapp connection",
       "test": {
@@ -160,7 +160,7 @@
       }
     }
   },
-  "target":   {
+  "target": {
     "pytest": {
       "out_dir": "../../tests/modules/transact",
       "resource_dir": "../../tests/modules/transact/polytest_resources"
@@ -170,7 +170,7 @@
       "resource_dir": "../../tests/polytest_resources"
     }
   },
-  "document":   {
+  "document": {
     "markdown": {
       "out_file": "../docs/test_plans/transact.md"
     }

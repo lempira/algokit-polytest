@@ -1,5 +1,4 @@
 import * as fs from "node:fs";
-import * as path from "node:path";
 import process from "node:process";
 import { parse } from "@std/csv";
 
@@ -70,7 +69,9 @@ function parseCSVFile(filePath: string): JiraIssue[] {
   const keyIdx = headers.indexOf("Issue key");
   const typeIdx = headers.indexOf("Issue Type");
   const descIdx = headers.indexOf("Description");
-  const acceptanceCriteriaIdx = headers.indexOf("Custom field (Acceptance Criteria)");
+  const acceptanceCriteriaIdx = headers.indexOf(
+    "Custom field (Acceptance Criteria)",
+  );
   const parentKeyIdx = headers.indexOf("Parent key");
   const parentSummaryIdx = headers.indexOf("Parent summary");
 
@@ -100,7 +101,63 @@ function parseCSVFile(filePath: string): JiraIssue[] {
   return issues;
 }
 
-function generateConfig(issues: JiraIssue[]): ConfigOutput {
+function getDefaultConfig(): ConfigOutput {
+  return {
+    name: "Wallet utilities",
+    package_name: "algokit_utils",
+    resource_dir: "../resources/",
+    version: "0.7.0",
+    suite: {},
+    group: {},
+    target: {
+      pytest: {
+        out_dir: "../../tests/modules/transact",
+        resource_dir: "../../tests/modules/transact/polytest_resources",
+      },
+      vitest: {
+        out_dir: "../../tests",
+        resource_dir: "../../tests/polytest_resources",
+      },
+    },
+    document: {
+      markdown: {
+        out_file: "../docs/test_plans/transact.md",
+      },
+    },
+  };
+}
+
+function loadExistingConfig(existingConfigPath: string): ConfigOutput | null {
+  if (!fs.existsSync(existingConfigPath)) {
+    return null;
+  }
+
+  try {
+    const content = fs.readFileSync(existingConfigPath, "utf-8");
+    // Strip comments and parse JSON
+    const jsonContent = content.replace(/\/\/.*$/gm, "").replace(
+      /\/\*[\s\S]*?\*\//g,
+      "",
+    );
+    return JSON.parse(jsonContent) as ConfigOutput;
+  } catch {
+    console.warn(
+      `Warning: Could not parse existing config at ${existingConfigPath}, using defaults`,
+    );
+    return null;
+  }
+}
+
+function generateConfig(
+  issues: JiraIssue[],
+  existingConfigPath?: string,
+): ConfigOutput {
+  // Load existing config or use defaults
+  const existingConfig = existingConfigPath
+    ? loadExistingConfig(existingConfigPath)
+    : null;
+  const baseConfig = existingConfig || getDefaultConfig();
+
   const epics = issues.filter((i) => i.issueType === "Epic");
   const stories = issues.filter((i) => i.issueType === "Story");
 
@@ -115,7 +172,12 @@ function generateConfig(issues: JiraIssue[]): ConfigOutput {
     const epicKey = epic.issueKey;
     const epicName = epic.summary;
     const epicDesc = epic.description;
-    const formattedDesc = formatDescription(epicKey, epicName, epicDesc, epic.acceptanceCriteria);
+    const formattedDesc = formatDescription(
+      epicKey,
+      epicName,
+      epicDesc,
+      epic.acceptanceCriteria,
+    );
 
     // Add to suite
     suite[epicKey] = {
@@ -136,7 +198,12 @@ function generateConfig(issues: JiraIssue[]): ConfigOutput {
     const storyName = story.summary;
     const storyDesc = story.description;
     const parentKey = story.parentKey;
-    const formattedDesc = formatDescription(storyKey, storyName, storyDesc, story.acceptanceCriteria);
+    const formattedDesc = formatDescription(
+      storyKey,
+      storyName,
+      storyDesc,
+      story.acceptanceCriteria,
+    );
 
     if (parentKey && group[parentKey]) {
       group[parentKey].test[storyKey] = {
@@ -157,40 +224,21 @@ function generateConfig(issues: JiraIssue[]): ConfigOutput {
     }
   }
 
+  // Merge: keep existing config but update suite and group
   return {
-    name: "Wallet utilities",
-    package_name: "algokit_utils",
-    resource_dir: "../resources/",
-    version: "0.7.0",
+    ...baseConfig,
     suite,
     group,
-    target: {
-      pytest: {
-        out_dir: "../../tests/modules/transact",
-        resource_dir: "../../tests/modules/transact/polytest_resources",
-      },
-      vitest: {
-        out_dir: "../../tests",
-        resource_dir: "../../tests/polytest_resources",
-      },
-    },
-    document: {
-      markdown: {
-        out_file: "../docs/test_plans/transact.md",
-      },
-    },
   };
 }
 
 function main() {
   const args = process.argv.slice(2);
-  const inputFile = args[0] ||
-    path.join(import.meta.dirname!, "./wallet.csv");
-  const outputFile = args[1] ||
-    path.join(import.meta.dirname!, "../../test_configs/wallet.jsonc");
+  const jiraCsv = args[0];
+  const polytestJson = args[1];
 
-  console.log(`Parsing ${inputFile}...`);
-  const issues = parseCSVFile(inputFile);
+  console.log(`Parsing ${jiraCsv}...`);
+  const issues = parseCSVFile(jiraCsv);
 
   console.log(
     `Found ${issues.length} issues (${
@@ -198,36 +246,10 @@ function main() {
     } epics, ${issues.filter((i) => i.issueType === "Story").length} stories)`,
   );
 
-  const config = generateConfig(issues);
+  const config = generateConfig(issues, polytestJson);
 
-  // Write JSONC with comments
-  const jsoncContent = `{
-  "name": "${config.name}",
-  "package_name": "${config.package_name}",
-  "resource_dir": "${config.resource_dir}",
-  "version": "${config.version}",
-  "suite": ${
-    JSON.stringify(config.suite, null, 2).split("\n").map((l) => "  " + l).join(
-      "\n",
-    )
-  },
-  "group": ${
-    JSON.stringify(config.group, null, 2).split("\n").map((l) => "  " + l).join(
-      "\n",
-    )
-  },
-  "target": ${
-    JSON.stringify(config.target, null, 2).split("\n").map((l) => "  " + l)
-      .join("\n")
-  },
-  "document": ${
-    JSON.stringify(config.document, null, 2).split("\n").map((l) => "  " + l)
-      .join("\n")
-  }
-}`;
-
-  fs.writeFileSync(outputFile, jsoncContent);
-  console.log(`Generated JSONC config at ${outputFile}`);
+  fs.writeFileSync(polytestJson, JSON.stringify(config, null, 2));
+  console.log(`Generated JSONC config at ${polytestJson}`);
 }
 
 main();
