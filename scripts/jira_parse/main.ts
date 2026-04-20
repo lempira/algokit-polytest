@@ -139,14 +139,17 @@ function generateConfig(
       epic.acceptanceCriteria,
     );
 
+    const suiteId = `Epic ${epicKey}`;
+    const groupId = `${epicKey} Stories`;
+
     // Add to suite
-    suite[epicKey] = {
+    suite[suiteId] = {
       desc: formattedDesc,
-      groups: [epicKey],
+      groups: [groupId],
     };
 
     // Add to group (empty initially)
-    group[epicKey] = {
+    group[groupId] = {
       desc: formattedDesc,
       test: {},
     };
@@ -157,30 +160,20 @@ function generateConfig(
     const storyKey = story.issueKey;
     const storyName = story.summary;
     const storyDesc = story.description;
-    const parentKey = story.parentKey;
     const formattedDesc = formatDescription(
       storyKey,
       storyName,
       storyDesc,
       story.acceptanceCriteria,
     );
+    const parentGroupId = `${story.parentKey} Stories`;
 
-    if (parentKey && group[parentKey]) {
-      group[parentKey].test[storyKey] = {
+    if (group[parentGroupId]) {
+      group[parentGroupId].test[storyKey] = {
         desc: formattedDesc,
       };
     } else {
-      // If no parent or parent not found, add to a default group
-      const defaultKey = "Uncategorized";
-      if (!group[defaultKey]) {
-        group[defaultKey] = {
-          desc: "Uncategorized stories",
-          test: {},
-        };
-      }
-      group[defaultKey].test[storyKey] = {
-        desc: formattedDesc,
-      };
+      throw Error(`Could not resolve group ${parentGroupId}`);
     }
   }
 

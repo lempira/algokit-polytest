@@ -4,45 +4,45 @@
   "resource_dir": "../resources/",
   "version": "0.8.0",
   "suite": {
-    "AK-1004": {
+    "Epic AK-1004": {
       "desc": "AK-1004: Dapp connection",
       "groups": [
-        "AK-1004"
+        "AK-1004 Stories"
       ]
     },
-    "AK-1003": {
+    "Epic AK-1003": {
       "desc": "AK-1003: Staking",
       "groups": [
-        "AK-1003"
+        "AK-1003 Stories"
       ]
     },
-    "AK-1002": {
+    "Epic AK-1002": {
       "desc": "AK-1002: Signing",
       "groups": [
-        "AK-1002"
+        "AK-1002 Stories"
       ]
     },
-    "AK-1001": {
+    "Epic AK-1001": {
       "desc": "AK-1001: Payment",
       "groups": [
-        "AK-1001"
+        "AK-1001 Stories"
       ]
     },
-    "AK-1000": {
+    "Epic AK-1000": {
       "desc": "AK-1000: View Balance. See how many assets are associated with an address",
       "groups": [
-        "AK-1000"
+        "AK-1000 Stories"
       ]
     },
-    "AK-992": {
+    "Epic AK-992": {
       "desc": "AK-992: Address creation. ability to create an algo address and view its current state",
       "groups": [
-        "AK-992"
+        "AK-992 Stories"
       ]
     }
   },
   "group": {
-    "AK-1004": {
+    "AK-1004 Stories": {
       "desc": "AK-1004: Dapp connection",
       "test": {
         "AK-1026": {
@@ -53,7 +53,7 @@
         }
       }
     },
-    "AK-1003": {
+    "AK-1003 Stories": {
       "desc": "AK-1003: Staking",
       "test": {
         "AK-1024": {
@@ -67,7 +67,7 @@
         }
       }
     },
-    "AK-1002": {
+    "AK-1002 Stories": {
       "desc": "AK-1002: Signing",
       "test": {
         "AK-1248": {
@@ -87,7 +87,7 @@
         }
       }
     },
-    "AK-1001": {
+    "AK-1001 Stories": {
       "desc": "AK-1001: Payment",
       "test": {
         "AK-1017": {
@@ -119,7 +119,7 @@
         }
       }
     },
-    "AK-1000": {
+    "AK-1000 Stories": {
       "desc": "AK-1000: View Balance. See how many assets are associated with an address",
       "test": {
         "AK-1009": {
@@ -139,7 +139,7 @@
         }
       }
     },
-    "AK-992": {
+    "AK-992 Stories": {
       "desc": "AK-992: Address creation. ability to create an algo address and view its current state",
       "test": {
         "AK-999": {
@@ -167,5 +167,5 @@
     "vitest": {
       "out_dir": "../../tests/wallet_utils"
     }
-  },
+  }
 }
