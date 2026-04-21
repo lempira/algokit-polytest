@@ -69,6 +69,20 @@ function parseCSVFile(filePath: string): JiraIssue[] {
 
   const headers = records[0];
 
+  // Validate required headers
+  const requiredHeaders = [
+    "Summary",
+    "Issue key",
+    "Issue Type",
+    "Description",
+  ];
+  const missingHeaders = requiredHeaders.filter((h) => !headers.includes(h));
+  if (missingHeaders.length > 0) {
+    throw new Error(
+      `Missing required columns: ${missingHeaders.join(", ")}`,
+    );
+  }
+
   // Find column indices
   const summaryIdx = headers.indexOf("Summary");
   const keyIdx = headers.indexOf("Issue key");
