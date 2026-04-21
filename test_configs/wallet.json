@@ -4,12 +4,6 @@
   "resource_dir": "../resources/",
   "version": "0.8.0",
   "suite": {
-    "Epic AK-1004": {
-      "desc": "AK-1004: Dapp connection",
-      "groups": [
-        "AK-1004 Stories"
-      ]
-    },
     "Epic AK-1003": {
       "desc": "AK-1003: Staking",
       "groups": [
@@ -42,17 +36,6 @@
     }
   },
   "group": {
-    "AK-1004 Stories": {
-      "desc": "AK-1004: Dapp connection",
-      "test": {
-        "AK-1026": {
-          "desc": "AK-1026: LiquidAuth. As a user I would like to connect to a Dapp with LiquidAuth so I can use its services\n\nAcceptance Criteria:\nGiven I have setup a wallet\n\nThen I can connectthrough LiquidAuth with a Dapp\n\nAnd send/receive transactions"
-        },
-        "AK-1025": {
-          "desc": "AK-1025: Wallet connect. As a user I would like to connect to a Dapp with wallet connect so I can use its services\n\nAcceptance Criteria:\nGiven I have setup a wallet\n\nThen I can connect through wallet-connect with a Dapp\n\nAnd send/receive transactions"
-        }
-      }
-    },
     "AK-1003 Stories": {
       "desc": "AK-1003: Staking",
       "test": {
