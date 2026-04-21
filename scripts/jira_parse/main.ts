@@ -202,7 +202,7 @@ function main() {
   const config = generateConfig(issues, polytestJson);
 
   fs.writeFileSync(polytestJson, JSON.stringify(config, null, 2));
-  console.log(`Generated JSONC config at ${polytestJson}`);
+  console.log(`Generated JSON config at ${polytestJson}`);
 }
 
 main();
