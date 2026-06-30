@@ -1,7 +1,7 @@
 {
   "name": "algod_client Test Plan",
   "package_name": "algod_client",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "suite": {
     "GET genesis": {
       "desc": "Tests for the /genesis endpoint",
@@ -168,6 +168,22 @@
     },
     "vitest": {
       "out_dir": "../../packages/algod_client/tests"
+    }
+  },
+  "custom_target": {
+    "rust": {
+      "out_dir": "../../crates/algod_client/tests/generated",
+      "template_dir": "../templates/rust",
+      "suite_file_name_template": "{{ suite.name | convert_case('Snake') }}.rs",
+      "test_regex_template": "async fn {{ name | convert_case('Snake') }}\\(",
+      "runner": {
+        "nextest": {
+          "command": "cargo nextest run --run-ignored all",
+          "work_dir": "../../crates/algod_client",
+          "pass_regex_template": "{{ test_name | convert_case('Snake') }} .* (ok|PASS)",
+          "fail_regex_template": "{{ test_name | convert_case('Snake') }} .* (FAILED|FAIL)"
+        }
+      }
     }
   },
   "document": {

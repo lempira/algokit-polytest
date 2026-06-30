@@ -6,7 +6,8 @@ Test configuration files and mock server infrastructure for cross-language testi
 
 This repository provides:
 
-- **Test Configurations** (`test_configs/`) - Shared test plans for polytest CLI, ensuring consistent test coverage across Python, TypeScript, and other language implementations
+- **Test Configurations** (`test_configs/`) - Shared test plans for polytest CLI, ensuring consistent test coverage across Python, TypeScript, Rust, and other language implementations
+- **Custom Targets** (`templates/rust/`) - A polytest custom target that generates Rust/nextest test stubs, consumed by implementation repos via the polytest `--git` flag
 - **Mock Server** (`resources/mock-server/`) - Bun-based HTTP server that replays pre-recorded HAR files for deterministic API testing
 - **GitHub Actions** (`.github/actions/`) - Reusable composite actions for CI integration
 
@@ -21,6 +22,8 @@ This repository provides:
 │   └── mock-server/            # Bun/Fastify mock server
 │       ├── recordings/         # HAR files for algod, indexer, kmd
 │       └── src/                # Server implementation
+├── templates/                  # Custom polytest target templates
+│   └── rust/                    # Rust/nextest target (suite/group/test .rs.jinja)
 ├── test_configs/               # Polytest configuration files
 │   ├── algod_client.jsonc
 │   ├── indexer_client.jsonc

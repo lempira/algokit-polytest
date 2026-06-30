@@ -1,7 +1,7 @@
 {
   "name": "kmd_client Test Plan",
   "package_name": "kmd_client",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "suite": {
     "GET versions": {
       "desc": "Tests for the GET /versions endpoint",
