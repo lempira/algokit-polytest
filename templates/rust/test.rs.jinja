@@ -2,5 +2,5 @@
 #[tokio::test]
 #[ignore = "requires localnet"]
 async fn {{ test.name | convert_case('Snake') }}() {
-    // TODO: implement
+    todo!("implement {{ test.name | convert_case('Snake') }}")
 }
