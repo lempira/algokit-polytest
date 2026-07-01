@@ -2,7 +2,7 @@
   "name": "algokit_transact Test Plan",
   "package_name": "algokit_transact",
   "resource_dir": "../resources/",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "suite": {
     "Payment": {
       "desc": "Tests for payment transactions",

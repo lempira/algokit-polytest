@@ -5,4 +5,4 @@ members = [
 ]
 
 [workspace.metadata.bin]
-polytest = { git = "https://github.com/joe-p/polytest", version = "*", ref = "0ed4cab" }
+polytest = { git = "https://github.com/joe-p/polytest", version = "*", ref = "8ba4213" }
