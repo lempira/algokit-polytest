@@ -172,7 +172,7 @@
   },
   "custom_target": {
     "rust": {
-      "out_dir": "../../crates/algod_client/tests/generated",
+      "out_dir": "../../crates/algod_client/tests",
       "template_dir": "../templates/rust",
       "suite_file_name_template": "{{ suite.name | convert_case('Snake') }}.rs",
       "test_regex_template": "async fn {{ name | convert_case('Snake') }}\\(",
